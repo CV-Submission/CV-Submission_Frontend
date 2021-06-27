@@ -1,0 +1,19 @@
+/* --- Sign in Sign Up Forms Style --- */
+.sign-form {
+	max-width: 300px;
+}
+.sign-form-forgot {
+	float: right;
+}
+.sign-form-button {
+	width: 100%;
+}
+.container {
+	text-align: center;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* --- Style --- */
