@@ -6,24 +6,32 @@ import {
 	InboxOutlined,
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-import '../styles.css';
-
-const normFile = (e) => {
-	console.log('Upload event:', e);
-
-	if (Array.isArray(e)) {
-		return e;
-	}
-
-	return e && e.fileList;
-};
-const onDrop = (e) => {
-	console.log('Dropped files', e.dataTransfer.files);
-};
+import '../../styles.css'
 
 function Attachment(props) {
 	const onFinish = (values) => {
 		console.log('Received values of form:', values);
+		/*
+		var file = new FormData();
+    file.append('name',files[0])
+    var req=request
+              .post('http://localhost:8000/api/v0/image/')
+              .send(file);
+    req.end(function(err,response){
+        console.log("upload done!!!!!");
+    }); */
+	};
+	const onDrop = (e) => {
+		// console.log('Dropped files', e.dataTransfer.files);
+	};
+	const normFile = (e) => {
+		console.log('Upload event:', e);
+
+		if (Array.isArray(e)) {
+			return e;
+		}
+
+		return e && e.fileList;
 	};
 
 	return (

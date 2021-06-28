@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button, Space } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-import '../styles.css';
+import '../../styles.css';
 
 function Education(props) {
 	const onFinish = (values) => {
