@@ -14,6 +14,7 @@ import 'antd/dist/antd.css';
 import '../../styles.css';
 
 const { Option } = Select;
+let country_options = [];
 
 function ProfileEdit(props) {
 	const provinceData = ['sa', 'sa'];
@@ -21,41 +22,46 @@ function ProfileEdit(props) {
 		sa: ['jed', 'makh'],
 		sa: ['jed', 'makh'],
 	};
-
 	const [hasDependents, setHasDependents] = useState(true);
-	const [cities, setCities] = useState(cityData[provinceData[0]]);
-	const [Country, setCountry] = useState(cityData[provinceData[0]][0]);
-	const [countryCode, setCountryCode] = useState('');
+	const [Country, setCountry] = useState();
+	const [city_option, setcity_option] = useState([]);
+	const [CountryCode , setCountryCode]= useState();
+    const [ SelectedCode , setSelectedCode]=useState();
 	const [userDetails, seUserDetails] = useState({
 		firstName: 'haneen',
 		'lastName ': 'alghamdi',
 		email: 'han@gmail.com',
 	});
+
 	useEffect(() => {
 		axios
 			.get(`https://countriesnow.space/api/v0.1/countries/`)
 			.then((response) => {
+				console.log(response.data.data[0].country);
+				console.log(response.data.data[0].cities);
 				setCountry(response.data.data);
-				console.log(response.data.data);
-				provinceData = response.data.data;
-				cityData = response.data.data[1];
-				// console.log(Country);
+				Country.map((elem, index) => {
+					country_options.push({ value: elem.country });
+				});
 			})
 			.catch((error) => {
 				console.log('API ERROR:', error);
 			});
 	}, []);
 
-	const prefixSelector = (
-		<Form.Item name='prefix' noStyle>
-			<Select
-				style={{
-					width: 70,
-				}}>
-				<Option value={countryCode}>{countryCode}</Option>
-			</Select>
-		</Form.Item>
-	);
+	useEffect(() => {
+		axios
+		  .get(`https://countriesnow.space/api/v0.1/countries/codes`)
+		  .then((response) => {
+			console.log("COUNTRY CODE:", response.data.data);
+			setCountryCode(response.data.data)
+		   
+		  })
+		  .catch((error) => {
+			console.log("API ERROR:", error);
+		  });
+	  }, []);
+	
 	const onFinish = (values) => {
 		console.log('Success:', values);
 	};
@@ -65,14 +71,14 @@ function ProfileEdit(props) {
 		else setHasDependents(false);
 	};
 
-	const handleProvinceChange = (value) => {
-		setCities(cityData[value]);
-		setCountry(cityData[value][0]);
-	};
+	// const handleProvinceChange = (value) => {
+	// 	setCities(cityData[value]);
+	// 	setCountry(cityData[value][0]);
+	// };
 
-	const onSecondCityChange = (value) => {
-		setCountry(value);
-	};
+	// const onSecondCityChange = (value) => {
+	// 	setCountry(value);
+	// };
 
 	return (
 		<div className='container'>
@@ -141,24 +147,6 @@ function ProfileEdit(props) {
 						placeholder='Email'
 					/>
 				</Form.Item>
-
-				<Form.Item
-					name='phone'
-					label='Phone Number'
-					rules={[
-						{
-							required: true,
-							message: 'Please input your phone number!',
-						},
-					]}>
-					<Input
-						addonBefore={prefixSelector}
-						prefix={<PhoneOutlined className='site-form-item-icon' />}
-						style={{
-							width: '100%',
-						}}
-					/>
-				</Form.Item>
 				<Form.Item
 					name='date-of-birth'
 					label='Date of Birth'
@@ -198,26 +186,69 @@ function ProfileEdit(props) {
 						<InputNumber min={0} max={10} />
 					</Form.Item>
 				</Form.Item>
-
-				<Form.Item>
+				<Form.Item
+				label="Country">
 					<Select
-						defaultValue={provinceData[0]}
-						style={{ width: 120 }}
-						onChange={handleProvinceChange}>
-						{provinceData.map((province) => (
-							<Option key={province}>{province}</Option>
-						))}
-					</Select>
+						style={{
+							width: 200,
+						}}
+						showSearch
+						onChange={(event) => {
+							console.log('onChange@@', event);
+							let find_city = Country.find(function (element, index) {
+								if (element.country == event) return true;
+							});
+							console.log(find_city.cities);
+							setcity_option(find_city.cities);
+							console.log(city_option);
+							console.log(city_option);
+							let find_code = CountryCode.find(function (element, index) {
+							  if (element.name == event) 
+							  return true;
+							});
+							setSelectedCode(find_code.dial_code)
+							console.log('find_code',find_code.dial_code)
+						}}
+						options={country_options}
+						placeholder='type yor country'
+						filterOption={(inputValue, option) =>
+							option.value.toUpperCase().includes(inputValue.toUpperCase())
+						}></Select>
+				</Form.Item>
+				<Form.Item
+				label="City">
 					<Select
-						style={{ width: 120 }}
-						value={setCountry}
-						onChange={onSecondCityChange}>
-						{cities.map((city) => (
-							<Option key={city}>{city}</Option>
-						))}
+						showSearch
+						style={{ width: 200 }}
+						onChange={(event) => {
+							console.log('onChange', event);
+						}}
+						placeholder='type your city '
+						filterOption={(inputValue, option) =>
+							option.value.toUpperCase().includes(inputValue.toUpperCase())
+						}>
+						{city_option.length > 0
+							? city_option.map((item) => <Option key={item}>{item}</Option>)
+							: null}
 					</Select>
 				</Form.Item>
-
+				<Form.Item
+          name="phone"
+          label="Phone Number"
+          rules={[
+            {
+              required: true,
+              message: "Please input your phone number!",
+            },
+          ]}
+        >
+          <Input
+            addonBefore={SelectedCode}
+            style={{
+              width: "100%",
+            }}
+          />
+        </Form.Item>
 				<Form.Item>
 					<Button type='primary' htmlType='submit' className='sign-form-button'>
 						Save

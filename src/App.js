@@ -38,10 +38,6 @@ function App() {
 							<Link to='/sign-in'>Sign in</Link>
 						</Menu.Item>
 
-						<Menu.Item key='sign-up'>
-							<Link to='/sign-up'>Sign Up</Link>
-						</Menu.Item>
-
 						<Menu.Item key='logout' style={{ float: 'right' }}>
 							Log out
 						</Menu.Item>

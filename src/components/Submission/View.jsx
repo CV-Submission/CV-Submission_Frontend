@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button} from 'antd';
+import { Form, Button } from 'antd';
 
 function View(props) {
 	const [userDetails, seUserDetails] = useState({
@@ -15,7 +15,7 @@ function View(props) {
 		city: 'Jeddah',
 		country: 'Saudi Arabia',
 		education: [],
-		attachment: []
+		attachment: [],
 	});
 	const onFinish = (values) => {
 		console.log('Success:', values);
