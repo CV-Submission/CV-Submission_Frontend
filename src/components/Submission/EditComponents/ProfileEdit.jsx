@@ -17,22 +17,26 @@ const { Option } = Select;
 let country_options = [];
 
 function ProfileEdit(props) {
-	const provinceData = ['sa', 'sa'];
-	const cityData = {
-		sa: ['jed', 'makh'],
-		sa: ['jed', 'makh'],
-	};
+	const userData = localStorage.getItem('userDetails');
 	const [hasDependents, setHasDependents] = useState(true);
 	const [Country, setCountry] = useState();
 	const [city_option, setcity_option] = useState([]);
-	const [CountryCode , setCountryCode]= useState();
-    const [ SelectedCode , setSelectedCode]=useState();
+	const [CountryCode, setCountryCode] = useState();
+	const [SelectedCode, setSelectedCode] = useState();
+	const [selectedCountry, setSelectedCountry] = useState();
+	const [selectedCity, setSelectedCity] = useState();
 	const [userDetails, seUserDetails] = useState({
-		firstName: 'haneen',
-		'lastName ': 'alghamdi',
-		email: 'han@gmail.com',
+		firstName: 'haneen', // userData.firstName
+		lastName: 'alghamdi', // userData.lastName
+		email: 'han@gmail.com', // userData.email // userData
 	});
 
+	const selectCountry = (val) => {
+		console.log('country ---', val);
+	};
+	const selectCity = (val) => {
+		console.log('city ---- ', val);
+	};
 	useEffect(() => {
 		axios
 			.get(`https://countriesnow.space/api/v0.1/countries/`)
@@ -40,7 +44,8 @@ function ProfileEdit(props) {
 				console.log(response.data.data[0].country);
 				console.log(response.data.data[0].cities);
 				setCountry(response.data.data);
-				Country.map((elem, index) => {
+				let countryMap = response.data.data;
+				countryMap.map((elem, index) => {
 					country_options.push({ value: elem.country });
 				});
 			})
@@ -51,19 +56,42 @@ function ProfileEdit(props) {
 
 	useEffect(() => {
 		axios
-		  .get(`https://countriesnow.space/api/v0.1/countries/codes`)
-		  .then((response) => {
-			console.log("COUNTRY CODE:", response.data.data);
-			setCountryCode(response.data.data)
-		   
-		  })
-		  .catch((error) => {
-			console.log("API ERROR:", error);
-		  });
-	  }, []);
-	
+			.get(`https://countriesnow.space/api/v0.1/countries/codes`)
+			.then((response) => {
+				console.log('COUNTRY CODE:', response.data.data);
+				setCountryCode(response.data.data);
+			})
+			.catch((error) => {
+				console.log('API ERROR:', error);
+			});
+	}, []);
+
 	const onFinish = (values) => {
 		console.log('Success:', values);
+
+		const data = {
+			firstName: values['first-name'],
+			lastName: values['last-name'],
+			email: values.email,
+			dateOfBirth: '2000/3/3',// values['date-of-bitrh'],
+			country: selectedCountry,
+			city: selectedCity,
+			numberOfDependents: values['number-of-dependents'] || 0,
+			yearsOdExperience: values['years-of-expereince'],
+			phone: values.phone,
+			martialStatus: values['martial-status'],
+		};
+		const token = localStorage.getItem('userToken');
+		const config = {
+			headers: {
+				Authorization: `Token ${token}`,
+			},
+		};
+		console.log('form data ---', data);
+		axios
+			.post('http://127.0.0.1:8000/api/UserDetial', data, config)
+			.then((res) => console.log('Profile updated ---', res))
+			.catch((err) => console.log('profile edit error ---', err));
 	};
 	const onChange = (values) => {
 		console.log('form values ---', values);
@@ -87,9 +115,9 @@ function ProfileEdit(props) {
 				className='sign-form'
 				layout='vertical'
 				initialValues={{
-					firstName: userDetails['firstName'],
-					lastName: userDetails['lastName'],
-					emial: userDetails['email'],
+					'first-name': userDetails['firstName'],
+					'last-name': userDetails['lastName'],
+					email: userDetails['email'],
 				}}
 				onFinish={onFinish}>
 				<Form.Item
@@ -157,7 +185,7 @@ function ProfileEdit(props) {
 							message: 'Please select Date of birth!',
 						},
 					]}>
-					<DatePicker />
+					<DatePicker format='DD-MM-YYYY' onChange={val=> console.log('this is date picker ---', val)} />
 				</Form.Item>
 
 				<Form.Item label='Years of experience'>
@@ -186,8 +214,7 @@ function ProfileEdit(props) {
 						<InputNumber min={0} max={10} />
 					</Form.Item>
 				</Form.Item>
-				<Form.Item
-				label="Country">
+				<Form.Item label='Country'>
 					<Select
 						style={{
 							width: 200,
@@ -203,11 +230,11 @@ function ProfileEdit(props) {
 							console.log(city_option);
 							console.log(city_option);
 							let find_code = CountryCode.find(function (element, index) {
-							  if (element.name == event) 
-							  return true;
+								if (element.name == event) return true;
 							});
-							setSelectedCode(find_code.dial_code)
-							console.log('find_code',find_code.dial_code)
+							setSelectedCode(find_code.dial_code);
+							console.log('find_code', find_code.dial_code);
+							setSelectedCountry(event);
 						}}
 						options={country_options}
 						placeholder='type yor country'
@@ -215,13 +242,13 @@ function ProfileEdit(props) {
 							option.value.toUpperCase().includes(inputValue.toUpperCase())
 						}></Select>
 				</Form.Item>
-				<Form.Item
-				label="City">
+				<Form.Item label='City'>
 					<Select
 						showSearch
 						style={{ width: 200 }}
-						onChange={(event) => {
-							console.log('onChange', event);
+						onChange={(value) => {
+							console.log('onChange', value);
+							setSelectedCity(value);
 						}}
 						placeholder='type your city '
 						filterOption={(inputValue, option) =>
@@ -233,22 +260,21 @@ function ProfileEdit(props) {
 					</Select>
 				</Form.Item>
 				<Form.Item
-          name="phone"
-          label="Phone Number"
-          rules={[
-            {
-              required: true,
-              message: "Please input your phone number!",
-            },
-          ]}
-        >
-          <Input
-            addonBefore={SelectedCode}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
+					name='phone'
+					label='Phone Number'
+					rules={[
+						{
+							required: true,
+							message: 'Please enter your phone number!',
+						},
+					]}>
+					<Input
+						addonBefore={SelectedCode}
+						style={{
+							width: '100%',
+						}}
+					/>
+				</Form.Item>
 				<Form.Item>
 					<Button type='primary' htmlType='submit' className='sign-form-button'>
 						Save

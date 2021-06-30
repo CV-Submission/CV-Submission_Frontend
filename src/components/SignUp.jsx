@@ -1,12 +1,31 @@
 import React from 'react';
+import axios from 'axios';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './styles.css';
 
 function SignUp(props) {
 	const onFinish = (values) => {
 		console.log('Success:', values);
+
+		const data = JSON.stringify({
+			username: values.username,
+			password: values.password,
+			firstname: values['first-name'],
+			lastname: values['last-name'],
+			email: values.email,
+		});
+		axios
+			.post(`http://127.0.0.1:8000/api-token-auth/register`, data)
+			.then((res) => {
+				console.log('------- signed up -----', res);
+
+				localStorage.setItem('userDetails', data);
+				localStorage.setItem('userToken', res.data.token);
+			})
+			.catch((err) => console.log('sign up error ------', err));
 	};
 
 	return (
@@ -142,8 +161,7 @@ function SignUp(props) {
 					<Button type='primary' htmlType='submit' className='sign-form-button'>
 						Sign Up
 					</Button>
-					{/* Sign up Link */}
-					Already have an account? <a href=''>Sign in</a>
+					Already have an account? <Link to='/sign-in'>Sign in</Link>
 				</Form.Item>
 			</Form>
 		</div>
@@ -152,9 +170,3 @@ function SignUp(props) {
 
 export default SignUp;
 
-/* 
-
-The password string will start this way
-at least 1 lowercase, 1 uppercase, 1 numeric character, must be 6 characters or longer
-
-*/

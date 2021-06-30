@@ -1,14 +1,16 @@
-import React from 'react';
-import { Form, Input, Button, Space, Upload } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Space, Upload, message } from 'antd';
 import {
 	MinusCircleOutlined,
 	PlusOutlined,
 	InboxOutlined,
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-import '../../styles.css'
+import '../../styles.css';
+import axios from 'axios';
 
 function Attachment(props) {
+	const [fileUpload, setFileUpload] = useState();
 	const onFinish = (values) => {
 		console.log('Received values of form:', values);
 		/*
@@ -19,23 +21,69 @@ function Attachment(props) {
               .send(file);
     req.end(function(err,response){
         console.log("upload done!!!!!");
-    }); */
+	}); */
+		const data = { fileName: values.fileName, file: fileUpload };
+		const token = localStorage.getItem('userToken');
+		const config = {
+			headers: {
+				Authorization: `Token ${token}`,
+			},
+		};
+		axios.post(`http://localhost:8000/api/Attachment`, data, config).then((res) => { console.log("attachment res ---", res)}).catch((err)=> { console.log("attachment error ----- ", err)})
+	};
+
+	const testData = {
+		file: {
+			lastModified: 1624435108824,
+			lastModifiedDate: '2021-06-23T07:58:28.824Z',
+			name: "'Compare To' in Google Analytics.docx",
+			percent: 100,
+			response: 'ok',
+			size: 901022,
+			status: 'done',
+			type:
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			uid: 'rc-upload-1625079157011-13',
+			originFileObj: { uid: 'rc-upload-1625079157011-13' },
+		},
+
+		fileName: 'gggg',
+	};
+	const testUpload = ({ file, onSuccess }) => {
+		setTimeout(() => {
+			onSuccess('ok');
+		}, 0);
+		console.log("---- file -----", file)
+		
+		/// axios upload request
 	};
 	const onDrop = (e) => {
-		// console.log('Dropped files', e.dataTransfer.files);
+		console.log('Dropped files', e);
 	};
 	const normFile = (e) => {
 		console.log('Upload event:', e);
+		setFileUpload(e.fileList[0])
+		// if (Array.isArray(e)) {
+		// 	return e;
+		// }
+		// return e && e.fileList;
 
-		if (Array.isArray(e)) {
-			return e;
+	};
+	const onChange = (info) => {
+		const { status } = info.file;
+		if (status !== 'uploading') {
+			console.log(info.file, info.fileList);
 		}
-
-		return e && e.fileList;
+		if (status === 'done') {
+			console.log(`${info.file.name} file uploaded successfully.`);
+		} else if (status === 'error') {
+			console.log(`${info.file.name} file upload failed.`);
+		}
 	};
 
 	return (
 		<div className='container'>
+			
 			<Form
 				name='attachment-form'
 				onFinish={onFinish}
@@ -59,11 +107,17 @@ function Attachment(props) {
 						name='dragger'
 						valuePropName='fileList'
 						getValueFromEvent={normFile}
-						onDrop={onDrop()}
 						noStyle
 						maxCount={1}
-						accept='.pdf, .doc, .docx'>
-						<Upload.Dragger name='files'>
+						accept='.pdf, .doc, .docx'
+						>
+						<Upload.Dragger
+							maxCount={1}
+							accept='.pdf, .doc, .docx'
+							name='files'
+							onChange={(info) => onChange}
+							onDrop={onDrop}
+							customRequest={testUpload}>
 							<p className='ant-upload-drag-icon'>
 								<InboxOutlined />
 							</p>
@@ -93,18 +147,22 @@ function Attachment(props) {
 												message: 'Please enter valid File title',
 											},
 										]}>
-										<Input placeholder='Degree title' />
+										<Input placeholder='File title' />
 									</Form.Item>
 									<Form.Item label='Attachment'>
 										<Form.Item
 											name='dragger'
 											valuePropName='fileList'
-											getValueFromEvent={normFile}
-											onDrop={onDrop()}
+											// getValueFromEvent={normFile}
+											// onDrop={onDrop}
 											noStyle
 											maxCount={1}
 											accept='.pdf, .doc, .docx'>
-											<Upload.Dragger name='files'>
+											<Upload.Dragger
+												name='files'
+												onChange={(info) => onChange}
+												onDrop={onDrop}
+												customRequest={testUpload}>
 												<p className='ant-upload-drag-icon'>
 													<InboxOutlined />
 												</p>
@@ -131,7 +189,7 @@ function Attachment(props) {
 				</Form.List>
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
-						Submit
+						Save
 					</Button>
 				</Form.Item>
 			</Form>

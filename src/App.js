@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
@@ -12,6 +12,7 @@ const { Header, Content, Footer } = Layout;
 
 function App() {
 	const [currentPage, setCurrentPage] = useState('home-page');
+	// let { username } = useParams();
 
 	const handleClick = (e) => {
 		console.log('click ', e);
@@ -38,9 +39,9 @@ function App() {
 							<Link to='/sign-in'>Sign in</Link>
 						</Menu.Item>
 
-						<Menu.Item key='logout' style={{ float: 'right' }}>
+						{/* <Menu.Item key='logout' style={{ float: 'right' }}>
 							Log out
-						</Menu.Item>
+						</Menu.Item> */}
 					</Menu>
 				</Header>
 				<Content
@@ -49,20 +50,23 @@ function App() {
 					<div
 						className='site-layout-background'
 						style={{ padding: 24, minHeight: 380 }}>
-						{/* Router */}
 
 						<Switch>
 							<Route exact path='/' render={() => <Home />} />
 							<Route exact path='/sign-up' render={() => <SignUp />} />
 							<Route exact path='/sign-in' render={() => <SignIn />} />
+							<Route exact path='/view' render={() => <View />} />
+							{/* <Route exact path='/:username' render={({ match }) => <View />} /> */}
+							<Route exact path='/edit' render={() => <Edit />} />
+							{/* <Route
+								exact
+								path='/:username/edit'
+								render={(match) => <Edit />}
+							/> */}
 							{/* <Route exact path='/:userName' render={() => <View />} /> */}
 							{/* <Route exact path='/:userName/edit' render={() => <Edit />} /> */}
 						</Switch>
 
-						{/* <SignIn /> */}
-						{/* <SignUp /> */}
-						{/* <View /> */}
-						{/* <Edit /> */}
 					</div>
 				</Content>
 

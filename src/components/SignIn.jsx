@@ -10,30 +10,20 @@ function SignIn(props) {
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
-		// Easily add ('Access-Control-Allow-Origin': '*') rule to the response header.
-		// https://cors-anywhere.herokuapp.com
-		axios({
-			url: `http://127.0.0.1:8000/api-token-auth/`,
-			method: 'post',
-			data: {
-				username: 'user2',
-				password: '12345678',
-			},
-		})
-			// axios
-			// 	.post(`http://127.0.0.1:8000/api-token-auth/`, {
-			// 		username: 'user2',
-			// 		password: '12345678',
-			// 	})
+		const data = JSON.stringify({
+			username: values.username,
+			password: values.password,
+		});
+		axios
+			.post(`http://127.0.0.1:8000/api-token-auth/login`, data)
 			.then((res) => {
 				console.log('------- signed in -----', res);
+				console.log('is this token? ', res.data.token);
+
+				localStorage.setItem('userToken', res.data.token);
 			})
 			.catch((err) => console.log('sign in error ------', err));
 	};
-
-	// const onFinishFailed = (errorInfo) => {
-	// 	console.log('Failed:', errorInfo);
-	// };
 
 	return (
 		<div className='container'>

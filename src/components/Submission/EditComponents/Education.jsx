@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Form, Input, Button, Space } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
@@ -7,6 +8,24 @@ import '../../styles.css';
 function Education(props) {
 	const onFinish = (values) => {
 		console.log('Received values of form:', values);
+
+		const data = {
+			'degree-title': values['degree-title'],
+			gpa: values.gpa,
+			'university-name': values['university-name'],
+		};
+		const token = localStorage.getItem('userToken');
+		const config = {
+			headers: {
+				Authorization: `Token ${token}`,
+			},
+		};
+		axios
+			.post('https://127.0.0.1:8000/api/Education', data, config)
+			.then((res) => {
+				console.log('education --- res ', res);
+			})
+			.catch((err) => console.log('education --- error ', err));
 	};
 
 	return (
@@ -123,7 +142,7 @@ function Education(props) {
 				</Form.List>
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
-						Submit
+						Save
 					</Button>
 				</Form.Item>
 			</Form>
