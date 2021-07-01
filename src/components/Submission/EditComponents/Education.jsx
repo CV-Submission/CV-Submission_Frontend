@@ -10,22 +10,28 @@ function Education(props) {
 		console.log('Received values of form:', values);
 
 		const data = {
-			'degree-title': values['degree-title'],
-			gpa: values.gpa,
-			'university-name': values['university-name'],
+			DegreeTitle: values['degree-title'],
+			GPA: values.gpa,
+			University: values['university-name'],
 		};
 		const token = localStorage.getItem('userToken');
+
 		const config = {
 			headers: {
 				Authorization: `Token ${token}`,
+				'content-type': 'application/json',
 			},
 		};
 		axios
-			.post('https://127.0.0.1:8000/api/Education', data, config)
+			.post(`http://127.0.0.1:8000/api/Education/`, data, config)
 			.then((res) => {
 				console.log('education --- res ', res);
 			})
 			.catch((err) => console.log('education --- error ', err));
+		// ------------------------- Request ERROR ------------------------- //
+		// {submission_id: ["This field is required."]}
+		// submission_id: ['This field is required.'];
+		// ------------------------- Request ERROR ------------------------- //
 	};
 
 	return (

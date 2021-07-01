@@ -11,25 +11,30 @@ function SignUp(props) {
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
-		const data = JSON.stringify({
+		const data = {
 			username: values.username,
 			password: values.password,
-			firstname: values['first-name'],
-			lastname: values['last-name'],
-			email: values.email,
-		});
+			FirstName: values['first-name'],
+			LastName: values['last-name'],
+			email: values.email, // small 'e'
+		};
+		const config = {
+			headers: {
+				'content-type': 'application/json',
+			},
+		};
 		axios
-			.post(`http://127.0.0.1:8000/api-token-auth/register`, data)
+			.post(`http://127.0.0.1:8000/api-token-auth/register`, data, config)
 			.then((res) => {
 				console.log('------- signed up -----', res);
 
 				localStorage.setItem('userDetails', data);
 				localStorage.setItem('userToken', res.data.token);
-				// return (<Redirect to="/view" />)
+				history.push('/view');
 
 			})
 			.catch((err) => console.log('sign up error ------', err));
-			history.push('/view')
+			
 	};
 
 	return (
@@ -173,4 +178,3 @@ function SignUp(props) {
 }
 
 export default SignUp;
-

@@ -22,14 +22,22 @@ function Attachment(props) {
     req.end(function(err,response){
         console.log("upload done!!!!!");
 	}); */
-		const data = { fileName: values.fileName, file: fileUpload };
+		const data = { FileName: values.fileName, File: fileUpload };
 		const token = localStorage.getItem('userToken');
 		const config = {
 			headers: {
 				Authorization: `Token ${token}`,
+				// 'content-type': 'application/json'
 			},
 		};
-		axios.post(`http://localhost:8000/api/Attachment`, data, config).then((res) => { console.log("attachment res ---", res)}).catch((err)=> { console.log("attachment error ----- ", err)})
+		axios
+			.post(`http://localhost:8000/api/Attachment`, data, config)
+			.then((res) => {
+				console.log('attachment res ---', res);
+			})
+			.catch((err) => {
+				console.log('attachment error ----- ', err);
+			});
 	};
 
 	const testData = {
@@ -53,8 +61,8 @@ function Attachment(props) {
 		setTimeout(() => {
 			onSuccess('ok');
 		}, 0);
-		console.log("---- file -----", file)
-		
+		console.log('---- file -----', file);
+
 		/// axios upload request
 	};
 	const onDrop = (e) => {
@@ -62,12 +70,11 @@ function Attachment(props) {
 	};
 	const normFile = (e) => {
 		console.log('Upload event:', e);
-		setFileUpload(e.fileList[0])
+		setFileUpload(e.fileList[0]);
 		// if (Array.isArray(e)) {
 		// 	return e;
 		// }
 		// return e && e.fileList;
-
 	};
 	const onChange = (info) => {
 		const { status } = info.file;
@@ -83,7 +90,6 @@ function Attachment(props) {
 
 	return (
 		<div className='container'>
-			
 			<Form
 				name='attachment-form'
 				onFinish={onFinish}
@@ -109,8 +115,7 @@ function Attachment(props) {
 						getValueFromEvent={normFile}
 						noStyle
 						maxCount={1}
-						accept='.pdf, .doc, .docx'
-						>
+						accept='.pdf, .doc, .docx'>
 						<Upload.Dragger
 							maxCount={1}
 							accept='.pdf, .doc, .docx'
