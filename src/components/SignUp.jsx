@@ -17,9 +17,12 @@ function SignUp(props) {
 			firstname: values['first-name'],
 			lastname: values['last-name'],
 			email: values.email,
-		});
+    });
+    const config = { 
+			headers: {'content-type' : 'application/json' }
+		 }
 		axios
-			.post(`http://127.0.0.1:8000/api-token-auth/register`, data)
+			.post(`http://127.0.0.1:8000/api-token-auth/register`, data ,config)
 			.then((res) => {
 				console.log('------- signed up -----', res);
 
