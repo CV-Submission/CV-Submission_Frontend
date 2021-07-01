@@ -2,11 +2,12 @@ import React from 'react';
 import axios from 'axios';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './styles.css';
 
 function SignUp(props) {
+	let history = useHistory();
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
@@ -24,8 +25,11 @@ function SignUp(props) {
 
 				localStorage.setItem('userDetails', data);
 				localStorage.setItem('userToken', res.data.token);
+				// return (<Redirect to="/view" />)
+
 			})
 			.catch((err) => console.log('sign up error ------', err));
+			history.push('/view')
 	};
 
 	return (

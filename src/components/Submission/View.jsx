@@ -35,7 +35,7 @@ function View(props) {
 
 	const handleClick = () => { 
 		console.log("edit clicked")
-		// history.push('/edit') 
+		history.push('/edit') 
 	}
 	
 	return (
