@@ -10,12 +10,18 @@ function SignUp(props) {
 	let history = useHistory();
 	const onFinish = (values) => {
 		console.log('Success:', values);
-
+		// {
+		// 	"username": "soso123",
+		// 	"email": "soso@gmail.com",
+		// 	"password": "soso123",
+		// 	"first_name": "soso",
+		// 	"last_name": "ali"
+		// }
 		const data = JSON.stringify({
 			username: values.username,
 			password: values.password,
-			firstname: values['first-name'],
-			lastname: values['last-name'],
+			first_name: values['first-name'],
+			last_name: values['last-name'],
 			email: values.email,
     });
     const config = { 
@@ -32,7 +38,7 @@ function SignUp(props) {
 
 			})
 			.catch((err) => console.log('sign up error ------', err));
-			history.push('/view')
+			// history.push('/view')
 	};
 
 	return (
