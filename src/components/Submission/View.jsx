@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Collapse, Row, Col } from 'antd';
+import axios from 'axios'
 import { useHistory } from 'react-router-dom';
 // import { createBrowserHistory } from 'history';
 
@@ -32,6 +33,50 @@ function View(props) {
 			file: "file"
 		}],
 	});
+	const [userData, serUserData] = useState() // from server
+	const [submission_id, setSubmission_id] = useState()
+
+	useEffect(()=>{
+		let effect_submission_id;
+		const config = {
+			headers: {
+				'content-type': 'application/json',
+				Authorization: `Token ${localStorage.getItem('userToken')}`,
+			},
+		};
+		const params = {
+			user_Id : "test20"
+		}
+		axios.get(`http://127.0.0.1:8000/api/UserDetial/`, {params}, config).then(res=>{
+			// console.log("=== responce in view ====", res)
+			effect_submission_id = res.data[0].submission_id
+
+		}).catch(err=> console.log("======== ERROR in view =====", err))
+
+		console.log('submission id ', effect_submission_id)
+		
+		axios
+			.get(`http://127.0.0.1:8000/api-token-auth/user/`, config)
+			.then((res) => {
+				console.log('=== responce in view ====', res);
+			})
+			.catch((err) => console.log('======== ERROR in view =====', err));
+
+			
+		// axios
+		// 	.get(`http://localhost:8000/api/Submission/`, config)
+		// 	.then((res) => {
+		// 		console.log('=== responce in view ====', res);
+		// 	})
+		// 	.catch((err) => console.log('======== ERROR in view =====', err));
+
+			axios
+				.get(`http://localhost:8000/api/User/`, config)
+				.then((res) => {
+					console.log('=== responce in view ====', res);
+				})
+				.catch((err) => console.log('======== ERROR in view =====', err));
+	}, [])
 
 	const handleClick = () => { 
 		console.log("edit clicked")

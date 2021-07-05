@@ -2,18 +2,39 @@
 .sign-form {
 	max-width: 300px;
 }
-.sign-form-forgot {
-	float: right;
-}
 .sign-form-button {
 	width: 100%;
 }
 .container {
 	text-align: center;
-
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+/* --- Style --- */
+
+/* --- Home - welcome --- */
+
+.welcome {
+	height: 70vh;
+	width: 100%;
+	padding: 2%;
+	font-family: 'Roboto Slab', serif;
+}
+.welcome h3 {
+	margin-top: 3%;
+	text-align: center;
+}
+.site-img {
+	background-image: url(.././images/welcome-cv.png);
+	background-repeat: repeat;
+	background-position: center;
+	background-size: cover;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	margin:0;
 }
 
 /* --- Style --- */

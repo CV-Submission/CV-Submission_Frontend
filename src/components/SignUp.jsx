@@ -11,13 +11,13 @@ function SignUp(props) {
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
-		const data = {
+		const data = JSON.stringify({
 			username: values.username,
 			password: values.password,
-			FirstName: values['first-name'],
-			LastName: values['last-name'],
+			'first-name': values['FirstName'], // small letters + dashes
+			'last-name': values['LastName'],
 			email: values.email, // small 'e'
-		};
+		});
 		const config = {
 			headers: {
 				'content-type': 'application/json',
@@ -46,7 +46,7 @@ function SignUp(props) {
 				onFinish={onFinish}>
 				<Form.Item
 					label='First Name'
-					name='first-name'
+					name='FirstName'
 					rules={[
 						{
 							required: true,
@@ -64,7 +64,7 @@ function SignUp(props) {
 				</Form.Item>
 				<Form.Item
 					label='Last Name'
-					name='last-name'
+					name='LastName'
 					rules={[
 						{
 							required: true,

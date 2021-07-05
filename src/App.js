@@ -46,11 +46,10 @@ function App() {
 				</Header>
 				<Content
 					className='site-layout'
-					style={{ padding: '0 50px', marginTop: 64 }}>
+					style={{ padding: '0 50px', marginTop: 64, height: '100vh' }}>
 					<div
 						className='site-layout-background'
-						style={{ padding: 24, minHeight: 380 }}>
-
+						style={{ padding: 24, minHeight: 380, height: '100vh' }}>
 						<Switch>
 							<Route exact path='/' render={() => <Home />} />
 							<Route exact path='/sign-up' render={() => <SignUp />} />
@@ -66,11 +65,19 @@ function App() {
 							{/* <Route exact path='/:userName' render={() => <View />} /> */}
 							{/* <Route exact path='/:userName/edit' render={() => <Edit />} /> */}
 						</Switch>
-
 					</div>
 				</Content>
 
-				<Footer style={{ textAlign: 'center' }}>
+				<Footer
+					style={{
+						textAlign: 'center',
+						position: 'fixed',
+						left: '0',
+						bottom: '0',
+						height: '60px',
+						width: '100%',
+						borderTop: '1px solid #E7E7E7',
+					}}>
 					Designed and Developed by Haneen Alghamdi & Raghad Abu-Mansour
 				</Footer>
 			</Router>
