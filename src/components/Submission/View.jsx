@@ -6,7 +6,7 @@ import { useHistory, useParams , Link} from 'react-router-dom';
 const { Panel } = Collapse;
 
 function View(props) {
-
+let history = useHistory();
 	const [attachments, setAttachments ] = useState([])
 	const [education, setEducation] = useState([]);
 	const [userDetails, setUserDetails] = useState({});
@@ -28,12 +28,6 @@ function View(props) {
 				console.log('res in view ', res);
 				localStorage.setItem('get_userData', JSON.stringify(res.data))
 				setUserData(res.data)
-				// setUserDetails({
-				// 	...userDetails,
-				// 	FirstName: res.data.user.first_name,
-				// 	LastName: res.data.user.last_name,
-				// 	Email: res.data.user.email,
-				// });
 			})
 			.catch((err) => console.log('ERROR in view ', err));
 

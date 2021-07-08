@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button} from 'antd';
 import axios from 'axios'
 import '../styles.css'
-import { Link } from 'react-router-dom'
+import { Link , useHistory} from 'react-router-dom'
 
 function List(props) {
+	let history = useHistory();
 	const [submissionList, setSubmissionList] = useState([])
 	const config = {
 		headers: {

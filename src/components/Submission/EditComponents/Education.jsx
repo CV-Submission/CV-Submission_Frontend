@@ -31,6 +31,11 @@ function Education(props) {
 			})
 			.catch((err) => console.log('ERROR post education ', err));
 	};
+	// removing old items
+	const removeItem = (key) =>{
+		
+	}
+
 
 	return (
 		<div className='container'>
@@ -89,7 +94,7 @@ function Education(props) {
 									align='baseline'>
 									<Form.Item
 										{...restField}
-										name={[name, 'degree-title']}
+										name={[name, 'DegreeTitle']}
 										label='Degree Title'
 										fieldKey={[fieldKey, 'DegreeTitle']}
 										rules={[
@@ -105,7 +110,7 @@ function Education(props) {
 										{...restField}
 										name={[name, 'University']}
 										label='University Name'
-										fieldKey={[fieldKey, 'university-name']}
+										fieldKey={[fieldKey, 'University']}
 										rules={[
 											{ required: true, message: 'Missing university name' },
 											{
