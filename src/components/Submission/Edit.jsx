@@ -3,6 +3,7 @@ import Attachment from './EditComponents/Attachment';
 import Education from './EditComponents/Education';
 import ProfileEdit from './EditComponents/ProfileEdit';
 import { Button, Collapse } from 'antd';
+import '../styles.css'
 
 function Edit(props) {
 	const { Panel } = Collapse;
@@ -10,7 +11,7 @@ function Edit(props) {
 	const handleSaveCV = () => {};
 	return (
 		<div>
-			<Collapse defaultActiveKey={['1']}>
+			<Collapse className='edit-page' defaultActiveKey={['1']}>
 				<Panel header='General Details' key='1'>
 					<ProfileEdit />
 				</Panel>

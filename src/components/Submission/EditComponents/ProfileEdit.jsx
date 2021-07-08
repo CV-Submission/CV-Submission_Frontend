@@ -17,38 +17,33 @@ function ProfileEdit(props) {
 			'content-type': 'application/json',
 		},
 	};
-	const [hasDependents, setHasDependents] = useState(true);
+	const [hasDependents, setHasDependents] = useState(false);
 	const [Country, setCountry] = useState();
 	const [city_option, setcity_option] = useState([]);
 	const [CountryCode, setCountryCode] = useState();
 	const [SelectedCode, setSelectedCode] = useState();
 	const [userDetails, seUserDetails] = useState({
-		FirstName: JSON.parse(localStorage.getItem('get_userData')).user.first_name, // userData.firstName // JSON.parse(localStorage.getItem('userData')).user.first_name
-		LastName: JSON.parse(localStorage.getItem('get_userData')).user.last_name, // userData.LastName // JSON.parse(localStorage.getItem('userData')).user.last_name
-		Email: JSON.parse(localStorage.getItem('get_userData')).user.email, // userData.Email // userData // JSON.parse(localStorage.getItem('userData')).user.email
+		FirstName: JSON.parse(localStorage.getItem('get_userData')).user.first_name, 
+		LastName: JSON.parse(localStorage.getItem('get_userData')).user.last_name, 
+		Email: JSON.parse(localStorage.getItem('get_userData')).user.email, 
 	});
 
 	const handleCountry = (event) => {
-		// console.log('onChange@@', event);
 		let find_city = Country.find(function (element, index) {
 			if (element.country == event) return true;
 		});
-		// console.log(find_city.cities);
 		setcity_option(find_city.cities);
-		// console.log(city_option);
-		// console.log(city_option);
 		let find_code = CountryCode.find(function (element, index) {
 			if (element.name == event) return true;
 		});
 		setSelectedCode(find_code.dial_code);
-		// console.log('find_code', find_code.dial_code);
 	};
+
+	// GET country options
 	useEffect(() => {
 		axios
 			.get(`https://countriesnow.space/api/v0.1/countries/`)
 			.then((response) => {
-				// console.log(response.data.data[0].country);
-				// console.log(response.data.data[0].cities);
 				setCountry(response.data.data);
 				let countryMap = response.data.data;
 				countryMap.map((elem, index) => {
@@ -60,29 +55,33 @@ function ProfileEdit(props) {
 			});
 	}, []);
 
+	// GET country codes
 	useEffect(() => {
 		axios
 			.get(`https://countriesnow.space/api/v0.1/countries/codes`)
 			.then((response) => {
-				// console.log('COUNTRY CODE:', response.data.data);
 				setCountryCode(response.data.data);
 			})
 			.catch((error) => {
 				console.log('API ERROR:', error);
 			});
 	}, []);
-	useEffect(()=>{
+	
+
+	// GET User details 
+	useEffect(() => {
+		const data = { submission_id: localStorage.getItem('submissionID') };
 		axios
-			.get(`http://127.0.0.1:8000/api/UserDetial/`, {}, config)
+			.get(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
 			.then((res) => {
 				console.log('Profile GET &&&&&&& ---', res);
-				// localStorage.setItem('userData_General', JSON.stringify(res.data));
 			})
 			.catch((err) => console.log('profile GET &&&&& ---', err));
-	}, [])
+	}, []);
 
+	// User Details Submit 
 	const onFinish = (values) => {
-		console.log('Success: @@@@@@@@@@@@@@@@@', values);
+		// console.log('Success: @@@@@@@@@@@@@@@@@', values);
 
 		const data = {
 			FirstName: values['FirstName'],
@@ -97,9 +96,9 @@ function ProfileEdit(props) {
 			MartialStatus: values['MartialStatus'],
 			CountryCode: SelectedCode,
 			Nationality: values.Nationality,
-			submission_id: localStorage.getItem('submissionID'), // get submission id from local storage > sign up process 
+			submission_id: localStorage.getItem('submissionID'), // get submission id from local storage, made on create
 		};
-		
+
 		axios
 			.post(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
 			.then((res) => {
@@ -108,6 +107,8 @@ function ProfileEdit(props) {
 			})
 			.catch((err) => console.log('profile edit error ---', err));
 	};
+
+	// toggle dependants field
 	const handleMartialStatusChange = (values) => {
 		console.log('form values ---', values);
 		if (values == 'Married') setHasDependents(true);
@@ -115,10 +116,9 @@ function ProfileEdit(props) {
 	};
 
 	return (
-		<div className='container'>
+		<div>
 			<Form
-				name='normal_login'
-				className='sign-form'
+				name='profile-edit'
 				layout='vertical'
 				initialValues={{
 					FirstName: userDetails['FirstName'],
@@ -284,7 +284,6 @@ function ProfileEdit(props) {
 							-1
 						}
 					/>
-					
 				</Form.Item>
 				<Form.Item
 					name='MobileNumber'
