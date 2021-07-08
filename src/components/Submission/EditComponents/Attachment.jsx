@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Space, Upload, message } from 'antd';
 import {
 	MinusCircleOutlined,
@@ -11,70 +11,43 @@ import axios from 'axios';
 
 function Attachment(props) {
 	const [fileUpload, setFileUpload] = useState();
+	const config = {
+		headers: {
+			Authorization: `Token ${localStorage.getItem('userToken')}`,
+			'content-type': 'multipart/form-data',
+			// 'content-type':'multipart/form-data; boundary=----WebKitFormBoundaryU5QJT3MDI9Clak3o',
+		},
+	};
+
 	const onFinish = (values) => {
-		console.log('Received values of form:', values);
-		/*
-		var file = new FormData();
-    file.append('name',files[0])
-    var req=request
-              .post('http://localhost:8000/api/v0/image/')
-              .send(file);
-    req.end(function(err,response){
-        console.log("upload done!!!!!");
-	}); */
-		const data = { FileName: values.fileName, File: fileUpload };
-		const token = localStorage.getItem('userToken');
-		const config = {
-			headers: {
-				Authorization: `Token ${token}`,
-				// 'content-type': 'application/json'
-			},
-		};
+
+		let formData = new FormData();
+		formData.append('File', fileUpload);
+		formData.append('FileName', values.fileName);
+		formData.append('submission_id', localStorage.getItem('submissionID'));
+
 		axios
-			.post(`http://localhost:8000/api/Attachment`, data, config)
+			.post(`http://localhost:8000/api/Attachment/`, formData, config)
 			.then((res) => {
-				console.log('attachment res ---', res);
+				console.log('attachment res ', res);
 			})
 			.catch((err) => {
-				console.log('attachment error ----- ', err);
+				console.log('attachment error ', err);
 			});
 	};
 
-	const testData = {
-		file: {
-			lastModified: 1624435108824,
-			lastModifiedDate: '2021-06-23T07:58:28.824Z',
-			name: "'Compare To' in Google Analytics.docx",
-			percent: 100,
-			response: 'ok',
-			size: 901022,
-			status: 'done',
-			type:
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			uid: 'rc-upload-1625079157011-13',
-			originFileObj: { uid: 'rc-upload-1625079157011-13' },
-		},
-
-		fileName: 'gggg',
-	};
 	const testUpload = ({ file, onSuccess }) => {
 		setTimeout(() => {
 			onSuccess('ok');
 		}, 0);
-		console.log('---- file -----', file);
-
-		/// axios upload request
 	};
 	const onDrop = (e) => {
 		console.log('Dropped files', e);
 	};
 	const normFile = (e) => {
-		console.log('Upload event:', e);
-		setFileUpload(e.fileList[0]);
-		// if (Array.isArray(e)) {
-		// 	return e;
-		// }
-		// return e && e.fileList;
+		console.log('Upload event: ', e);
+		if (e.fileList[0].originFileObj) setFileUpload(e.fileList[0].originFileObj);
+		else setFileUpload(e.fileList[0]);
 	};
 	const onChange = (info) => {
 		const { status } = info.file;
@@ -118,6 +91,7 @@ function Attachment(props) {
 						accept='.pdf, .doc, .docx'>
 						<Upload.Dragger
 							maxCount={1}
+							className='upload-file'
 							accept='.pdf, .doc, .docx'
 							name='files'
 							onChange={(info) => onChange}
@@ -158,8 +132,7 @@ function Attachment(props) {
 										<Form.Item
 											name='dragger'
 											valuePropName='fileList'
-											// getValueFromEvent={normFile}
-											// onDrop={onDrop}
+											getValueFromEvent={normFile}
 											noStyle
 											maxCount={1}
 											accept='.pdf, .doc, .docx'>

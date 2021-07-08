@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -7,15 +7,17 @@ import 'antd/dist/antd.css';
 import './styles.css';
 
 function SignUp(props) {
+	
 	let history = useHistory();
+
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
 		const data = JSON.stringify({
 			username: values.username,
 			password: values.password,
-			'first-name': values['FirstName'], // small letters + dashes
-			'last-name': values['LastName'],
+			first_name: values['FirstName'], // small letters + underscore dashes
+			last_name: values['LastName'],
 			email: values.email, // small 'e'
 		});
 		const config = {
@@ -29,13 +31,13 @@ function SignUp(props) {
 				console.log('------- signed up -----', res);
 
 				localStorage.setItem('userDetails', data);
-				localStorage.setItem('userToken', res.data.token);
-				history.push('/view');
-
+				localStorage.setItem('userToken', res.data.token)
 			})
 			.catch((err) => console.log('sign up error ------', err));
-			
+		
+			history.push('/sign-in');
 	};
+	
 
 	return (
 		<div className='container'>

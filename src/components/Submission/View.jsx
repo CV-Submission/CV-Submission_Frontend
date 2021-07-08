@@ -1,26 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Collapse, Row, Col } from 'antd';
 import axios from 'axios'
-import { useHistory } from 'react-router-dom';
-// import { createBrowserHistory } from 'history';
+import { useHistory, useParams , Link} from 'react-router-dom';
 
 const { Panel } = Collapse;
 
 function View(props) {
 
-	let history = useHistory();
-	const [userDetails, seUserDetails] = useState({
-		firstName: 'haneen',
-		lastName: 'alghamdi',
-		email: 'han@gmail.com',
-		phone: '557682817',
-		'phone-prefix': '+966',
-		'date-of-birth': '2/2/2000',
-		'years-of-expereince': 5,
-		'martial-status': 'Married',
-		'number-of-dependents': 2,
-		city: 'Jeddah',
-		country: 'Saudi Arabia',
+	const [attachments, setAttachments ] = useState()
+	const [userDetails, setUserDetails] = useState({
+		FirstName:
+			'test' || JSON.parse(localStorage.getItem('userData_general')).FirstName,
+		LastName:
+			'test' || JSON.parse(localStorage.getItem('userData_general')).LastName,
+		Email: 'test' || JSON.parse(localStorage.getItem('userData_general')).Email,
+		MobileNumber:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).MobileNumber,
+		CountryCode:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).CountryCode,
+		dateOfBirth:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).dateOfBirth,
+		YearsOfExpereince:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).YearsOfExpereince,
+		MartialStatus:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).MartialStatus,
+		NumberOfDependents:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).NumberOfDependents,
+		City: 'test' || JSON.parse(localStorage.getItem('userData_general')).City,
+		Country:
+			'test' || JSON.parse(localStorage.getItem('userData_general')).Country,
+		Nationality:
+			'test' ||
+			JSON.parse(localStorage.getItem('userData_general')).Nationality,
+
 		education: [
 			{
 				'degree-title': 'diploma',
@@ -28,60 +46,61 @@ function View(props) {
 				'university-name': 'ksu',
 			},
 		],
-		attachment: [{
-			"file-title" : "certificate",
-			file: "file"
-		}],
+		attachment: [
+			{
+				'file-title': 'certificate',
+				file: 'file',
+			},
+		],
 	});
-	const [userData, serUserData] = useState() // from server
-	const [submission_id, setSubmission_id] = useState()
+	const [userData, setUserData] = useState() // from server 
 
+	const { submission_id } = useParams();
 	useEffect(()=>{
-		let effect_submission_id;
 		const config = {
 			headers: {
 				'content-type': 'application/json',
 				Authorization: `Token ${localStorage.getItem('userToken')}`,
 			},
 		};
-		const params = {
-			user_Id : "test20"
-		}
-		axios.get(`http://127.0.0.1:8000/api/UserDetial/`, {params}, config).then(res=>{
-			// console.log("=== responce in view ====", res)
-			effect_submission_id = res.data[0].submission_id
-
-		}).catch(err=> console.log("======== ERROR in view =====", err))
-
-		console.log('submission id ', effect_submission_id)
 		
 		axios
-			.get(`http://127.0.0.1:8000/api-token-auth/user/`, config)
+			.get(`http://127.0.0.1:8000/api-token-auth/user`, config)
 			.then((res) => {
-				console.log('=== responce in view ====', res);
+				console.log('res in view ', res);
+				localStorage.setItem('get_userData', JSON.stringify(res.data))
+				setUserData(res.data)
+				setUserDetails({
+					...userDetails,
+					FirstName: res.data.user.first_name,
+					LastName: res.data.user.last_name,
+					Email: res.data.user.email,
+				});
 			})
-			.catch((err) => console.log('======== ERROR in view =====', err));
+			.catch((err) => console.log('ERROR in view ', err));
 
 			
-		// axios
-		// 	.get(`http://localhost:8000/api/Submission/`, config)
-		// 	.then((res) => {
-		// 		console.log('=== responce in view ====', res);
-		// 	})
-		// 	.catch((err) => console.log('======== ERROR in view =====', err));
-
 			axios
-				.get(`http://localhost:8000/api/User/`, config)
+				.get(`http://127.0.0.1:8000/api/UserDetial/`, config)
 				.then((res) => {
-					console.log('=== responce in view ====', res);
+					console.log('res in view USER DETIALS ', res);
 				})
-				.catch((err) => console.log('======== ERROR in view =====', err));
+				.catch((err) =>
+					console.log('ERROR in view USER DETIALS ', err)
+				);
+
+				// get attachment 
+				axios
+					.get(`http://localhost:8000/api/Attachment/`, config)
+					.then((res) => { 
+						console.log('res get attchments ', res)
+						const att = res.filter( (ele,id) => ele.submission_id === submission_id )
+						setAttachments([...attachments, att]);
+					})
+					.catch((err) => console.log('Error get attchments ', err));
+
 	}, [])
 
-	const handleClick = () => { 
-		console.log("edit clicked")
-		history.push('/edit') 
-	}
 	
 	return (
 		<div className=''>
@@ -93,7 +112,7 @@ function View(props) {
 								<p>First Name: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['firstName']}</p>
+								<p>{userDetails['FirstName']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -101,7 +120,7 @@ function View(props) {
 								<p>Last Name: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['lastName']}</p>
+								<p>{userDetails['LastName']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -109,7 +128,7 @@ function View(props) {
 								<p>Email Address: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['email']}</p>
+								<p>{userDetails['Email']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -118,8 +137,8 @@ function View(props) {
 							</Col>
 							<Col className='gutter-row' span={12}>
 								<p>
-									{userDetails['phone-prefix']}
-									{userDetails['phone']}
+									{userDetails['CountryCode']}
+									{userDetails['MobileNumber']}
 								</p>
 							</Col>
 						</Row>
@@ -128,7 +147,7 @@ function View(props) {
 								<p>Date of birth: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['date-of-birth']}</p>
+								<p>{userDetails['dateOfBirth']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -136,7 +155,7 @@ function View(props) {
 								<p>Martial Status: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['martial-status']}</p>
+								<p>{userDetails['MartialStatus']}</p>
 							</Col>
 						</Row>
 						{userDetails['number-of-dependents'] > 0 ? (
@@ -145,7 +164,7 @@ function View(props) {
 									<p>Number of dependents: </p>
 								</div>
 								<div className='col'>
-									<p>{userDetails['number-of-dependents']}</p>
+									<p>{userDetails['NumberOfDependents']}</p>
 								</div>
 							</Row>
 						) : (
@@ -156,7 +175,7 @@ function View(props) {
 								<p>Years of expereince: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['years-of-expereince']}</p>
+								<p>{userDetails['YearsOfExpereince']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -164,7 +183,7 @@ function View(props) {
 								<p>Country: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['country']}</p>
+								<p>{userDetails['Country']}</p>
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -172,7 +191,15 @@ function View(props) {
 								<p>City: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['city']}</p>
+								<p>{userDetails['City']}</p>
+							</Col>
+						</Row>
+						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+							<Col className='gutter-row' span={12}>
+								<p>Nationality: </p>
+							</Col>
+							<Col className='gutter-row' span={12}>
+								<p>{userDetails['Nationality']}</p>
 							</Col>
 						</Row>
 					</Panel>
@@ -232,13 +259,14 @@ function View(props) {
 			</Row>
 
 			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-				<Button
-					type='primary'
-					htmlType='button'
-					className='sign-form-button'
-					onClick={handleClick}>
-					Edit
-				</Button>
+				<Link to={`/edit/${submission_id}`}>
+					<Button
+						type='primary'
+						htmlType='button'
+						className='sign-form-button'>
+						Edit
+					</Button>
+				</Link>
 			</Row>
 		</div>
 	);

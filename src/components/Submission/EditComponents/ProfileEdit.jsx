@@ -8,25 +8,28 @@ import NATIONALITIES from '../../../nationalities'
 
 const { Option } = Select;
 let nationalityOptions = [...NATIONALITIES.map((ele) => ({ value: ele }))];
-//  NATIONALITIES.map( ele => nationalityOptions.push({ value: ele });
 let country_options = [];
 
 function ProfileEdit(props) {
-	
-	const userData = localStorage.getItem('userDetails');
+	const config = {
+		headers: {
+			Authorization: `Token ${localStorage.getItem('userToken')}`,
+			'content-type': 'application/json',
+		},
+	};
 	const [hasDependents, setHasDependents] = useState(true);
 	const [Country, setCountry] = useState();
 	const [city_option, setcity_option] = useState([]);
 	const [CountryCode, setCountryCode] = useState();
 	const [SelectedCode, setSelectedCode] = useState();
 	const [userDetails, seUserDetails] = useState({
-		FirstName: 'haneen', // userData.firstName
-		LastName: 'alghamdi', // userData.LastName
-		Email: 'han@gmail.com', // userData.Email // userData
+		FirstName: JSON.parse(localStorage.getItem('get_userData')).user.first_name, // userData.firstName // JSON.parse(localStorage.getItem('userData')).user.first_name
+		LastName: JSON.parse(localStorage.getItem('get_userData')).user.last_name, // userData.LastName // JSON.parse(localStorage.getItem('userData')).user.last_name
+		Email: JSON.parse(localStorage.getItem('get_userData')).user.email, // userData.Email // userData // JSON.parse(localStorage.getItem('userData')).user.email
 	});
 
 	const handleCountry = (event) => {
-		console.log('onChange@@', event);
+		// console.log('onChange@@', event);
 		let find_city = Country.find(function (element, index) {
 			if (element.country == event) return true;
 		});
@@ -68,6 +71,15 @@ function ProfileEdit(props) {
 				console.log('API ERROR:', error);
 			});
 	}, []);
+	useEffect(()=>{
+		axios
+			.get(`http://127.0.0.1:8000/api/UserDetial/`, {}, config)
+			.then((res) => {
+				console.log('Profile GET &&&&&&& ---', res);
+				// localStorage.setItem('userData_General', JSON.stringify(res.data));
+			})
+			.catch((err) => console.log('profile GET &&&&& ---', err));
+	}, [])
 
 	const onFinish = (values) => {
 		console.log('Success: @@@@@@@@@@@@@@@@@', values);
@@ -85,18 +97,15 @@ function ProfileEdit(props) {
 			MartialStatus: values['MartialStatus'],
 			CountryCode: SelectedCode,
 			Nationality: values.Nationality,
+			submission_id: localStorage.getItem('submissionID'), // get submission id from local storage > sign up process 
 		};
-		const token = localStorage.getItem('userToken');
-		const config = {
-			headers: {
-				Authorization: `Token ${token}`,
-				'content-type': 'application/json',
-			},
-		};
-		// console.log('form data --- ################', data);
+		
 		axios
 			.post(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
-			.then((res) => console.log('Profile updated ---', res))
+			.then((res) => {
+				console.log('Profile updated ---', res);
+				localStorage.setItem('userData_General', JSON.stringify(res.data));
+			})
 			.catch((err) => console.log('profile edit error ---', err));
 	};
 	const handleMartialStatusChange = (values) => {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link , Redirect, useHistory} from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useHistory, useLocation, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -7,7 +7,10 @@ import 'antd/dist/antd.css';
 import './styles.css';
 
 function SignIn(props) {
+	// const [redirectToReferrer, setRedirectToReferrer] = useState(false);
+	// const { state } = useLocation();
 	let history = useHistory();
+
 	const onFinish = (values) => {
 		console.log('Success:', values);
 
@@ -15,20 +18,22 @@ function SignIn(props) {
 			username: values.username,
 			password: values.password,
 		});
-		const config = { 
-			headers: {'content-type' : 'application/json' }
-		 }
+		const config = {
+			headers: { 'content-type': 'application/json' },
+		};
 		axios
-			.post(`http://127.0.0.1:8000/api-token-auth/login/`, data ,config )
+			.post(`http://127.0.0.1:8000/api-token-auth/auth`, data, config)
 			.then((res) => {
-				console.log('------- signed in -----', res);
-				console.log('is this token? ', res.data.token);
-
+				console.log('RES sign in ', res);
 				localStorage.setItem('userToken', res.data.token);
+				// setRedirectToReferrer(true);
+				history.push('/submissions');
 			})
-			.catch((err) => console.log('sign in error ------', err));
-			// return (<Redirect to="/view" />)
-			history.push('/view')
+			.catch((err) => console.log('ERROR sign in', err));
+
+		// if (redirectToReferrer === true) {
+		// 	return <Redirect to={state?.from || '/submissions'} />;
+		// }
 	};
 
 	return (

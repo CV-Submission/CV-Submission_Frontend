@@ -10,28 +10,22 @@ function Education(props) {
 		console.log('Received values of form:', values);
 
 		const data = {
-			DegreeTitle: values['degree-title'],
+			DegreeTitle: values['DegreeTitle'],
 			GPA: values.gpa,
-			University: values['university-name'],
+			University: values['University'],
 		};
-		const token = localStorage.getItem('userToken');
-
 		const config = {
 			headers: {
-				Authorization: `Token ${token}`,
+				Authorization: `Token ${localStorage.getItem('userToken')}`,
 				'content-type': 'application/json',
 			},
 		};
 		axios
 			.post(`http://127.0.0.1:8000/api/Education/`, data, config)
 			.then((res) => {
-				console.log('education --- res ', res);
+				console.log('RES post education ', res);
 			})
-			.catch((err) => console.log('education --- error ', err));
-		// ------------------------- Request ERROR ------------------------- //
-		// {submission_id: ["This field is required."]}
-		// submission_id: ['This field is required.'];
-		// ------------------------- Request ERROR ------------------------- //
+			.catch((err) => console.log('ERROR post education ', err));
 	};
 
 	return (
@@ -42,7 +36,7 @@ function Education(props) {
 				autoComplete='off'
 				layout='vertical'>
 				<Form.Item
-					name='degree-title'
+					name='DegreeTitle'
 					label='Degree Title'
 					fieldKey='degraa-title'
 					rules={[
@@ -55,7 +49,7 @@ function Education(props) {
 					<Input placeholder='Degree title' />
 				</Form.Item>
 				<Form.Item
-					name='university-name'
+					name='University'
 					label='University Name'
 					fieldKey='university-name'
 					rules={[
@@ -93,7 +87,7 @@ function Education(props) {
 										{...restField}
 										name={[name, 'degree-title']}
 										label='Degree Title'
-										fieldKey={[fieldKey, 'degree-title']}
+										fieldKey={[fieldKey, 'DegreeTitle']}
 										rules={[
 											{ required: true, message: 'Missing Degree title' },
 											{
@@ -105,7 +99,7 @@ function Education(props) {
 									</Form.Item>
 									<Form.Item
 										{...restField}
-										name={[name, 'university-name']}
+										name={[name, 'University']}
 										label='University Name'
 										fieldKey={[fieldKey, 'university-name']}
 										rules={[

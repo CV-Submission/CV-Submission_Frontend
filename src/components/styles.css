@@ -1,6 +1,9 @@
 /* --- Sign in Sign Up Forms Style --- */
 .sign-form {
-	max-width: 300px;
+	max-width: '600px';
+	height: 80vh;
+	margin: 6%;
+	padding: 4%;
 }
 .sign-form-button {
 	width: 100%;
