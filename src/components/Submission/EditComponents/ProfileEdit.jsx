@@ -5,6 +5,7 @@ import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../../styles.css';
 import NATIONALITIES from '../../../nationalities'
+import { useParams } from 'react-router-dom';
 
 const { Option } = Select;
 let nationalityOptions = [...NATIONALITIES.map((ele) => ({ value: ele }))];
@@ -17,15 +18,39 @@ function ProfileEdit(props) {
 			'content-type': 'application/json',
 		},
 	};
+	const {submission_id} = useParams()
 	const [hasDependents, setHasDependents] = useState(false);
 	const [Country, setCountry] = useState();
 	const [city_option, setcity_option] = useState([]);
 	const [CountryCode, setCountryCode] = useState();
 	const [SelectedCode, setSelectedCode] = useState();
 	const [userDetails, seUserDetails] = useState({
-		FirstName: JSON.parse(localStorage.getItem('get_userData')).user.first_name, 
-		LastName: JSON.parse(localStorage.getItem('get_userData')).user.last_name, 
-		Email: JSON.parse(localStorage.getItem('get_userData')).user.email, 
+		FirstName:
+			JSON.parse(localStorage.getItem('userData_General')).FirstName ||
+			JSON.parse(localStorage.getItem('get_userData')).user.first_name,
+		LastName:
+			JSON.parse(localStorage.getItem('userData_General')).LastName ||
+			JSON.parse(localStorage.getItem('get_userData')).user.last_name,
+		Email:
+			JSON.parse(localStorage.getItem('userData_General')).Email ||
+			JSON.parse(localStorage.getItem('get_userData')).user.email,
+		// dateOfBirth: Date.parse(
+		// 	JSON.parse(localStorage.getItem('userData_General')).dateOfBirth
+		// ),
+		Country: JSON.parse(localStorage.getItem('userData_General')).Country,
+		City: JSON.parse(localStorage.getItem('userData_General')).City,
+		NumberOfDependents:
+			JSON.parse(localStorage.getItem('userData_General')).NumberOfDependents ||
+			0,
+		YearsOfExpereince: JSON.parse(localStorage.getItem('userData_General'))
+			.YearsOfExpereince,
+		MobileNumber: JSON.parse(localStorage.getItem('userData_General'))
+			.MobileNumber,
+		MartialStatus: JSON.parse(localStorage.getItem('userData_General'))
+			.MartialStatus,
+		CountryCode: SelectedCode,
+		Nationality: JSON.parse(localStorage.getItem('userData_General'))
+			.Nationality,
 	});
 
 	const handleCountry = (event) => {
@@ -68,17 +93,6 @@ function ProfileEdit(props) {
 	}, []);
 	
 
-	// GET User details 
-	useEffect(() => {
-		const data = { submission_id: localStorage.getItem('submissionID') };
-		axios
-			.get(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
-			.then((res) => {
-				console.log('Profile GET &&&&&&& ---', res);
-			})
-			.catch((err) => console.log('profile GET &&&&& ---', err));
-	}, []);
-
 	// User Details Submit 
 	const onFinish = (values) => {
 		// console.log('Success: @@@@@@@@@@@@@@@@@', values);
@@ -96,16 +110,17 @@ function ProfileEdit(props) {
 			MartialStatus: values['MartialStatus'],
 			CountryCode: SelectedCode,
 			Nationality: values.Nationality,
-			submission_id: localStorage.getItem('submissionID'), // get submission id from local storage, made on create
+			submission_id: submission_id, // get submission id from params
 		};
 
 		axios
 			.post(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
 			.then((res) => {
-				console.log('Profile updated ---', res);
+				console.log('RES Profile updated ', res);
 				localStorage.setItem('userData_General', JSON.stringify(res.data));
+				seUserDetails(res.data)
 			})
-			.catch((err) => console.log('profile edit error ---', err));
+			.catch((err) => console.log('ERROR Profile edit ', err));
 	};
 
 	// toggle dependants field
@@ -124,6 +139,14 @@ function ProfileEdit(props) {
 					FirstName: userDetails['FirstName'],
 					LastName: userDetails['LastName'],
 					Email: userDetails['Email'],
+					// dateOfBirth: userDetails['dateOfBirth'],
+					YearsOfExpereince: userDetails['YearsOfExpereince'],
+					MartialStatus: userDetails['MartialStatus'],
+					NumberOfDependents: userDetails['NumberOfDependents'],
+					Country: userDetails['Country'],
+					City: userDetails['City'],
+					Nationality: userDetails['Nationality'],
+					MobileNumber: userDetails['MobileNumber'],
 				}}
 				onFinish={onFinish}>
 				<Form.Item
@@ -198,7 +221,7 @@ function ProfileEdit(props) {
 				</Form.Item>
 
 				<Form.Item label='Years of experience' name='YearsOfExpereince'>
-					<InputNumber min={0} max={10} />
+					<InputNumber min={0} max={40} />
 				</Form.Item>
 				<Form.Item
 					name='MartialStatus'
@@ -249,7 +272,7 @@ function ProfileEdit(props) {
 					rules={[
 						{
 							required: true,
-							message: 'Please enter your country!',
+							message: 'Please enter your city!',
 						},
 					]}>
 					<Select

@@ -4,8 +4,11 @@ import { Form, Input, Button, Space } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../../styles.css';
+import { useParams } from 'react-router-dom'
 
 function Education(props) {
+	const { submission_id } = useParams()
+
 	const onFinish = (values) => {
 		console.log('Received values of form:', values);
 
@@ -13,6 +16,7 @@ function Education(props) {
 			DegreeTitle: values['DegreeTitle'],
 			GPA: values.gpa,
 			University: values['University'],
+			submission_id: submission_id,
 		};
 		const config = {
 			headers: {
@@ -38,7 +42,7 @@ function Education(props) {
 				<Form.Item
 					name='DegreeTitle'
 					label='Degree Title'
-					fieldKey='degraa-title'
+					fieldKey='DegreeTitle'
 					rules={[
 						{ required: true, message: 'Missing Degree title' },
 						{
@@ -51,7 +55,7 @@ function Education(props) {
 				<Form.Item
 					name='University'
 					label='University Name'
-					fieldKey='university-name'
+					fieldKey='University'
 					rules={[
 						{ required: true, message: 'Missing university name' },
 						{

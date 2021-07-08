@@ -46,7 +46,7 @@ function List(props) {
 					))
 				) : (
 					<div className='container'>
-						<p> no submission created yet </p>
+						<p> no submissions created yet </p>
 					</div>
 				)}
 				<div className='container'>
