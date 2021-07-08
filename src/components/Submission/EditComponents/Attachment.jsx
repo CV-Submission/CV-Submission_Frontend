@@ -8,10 +8,10 @@ import {
 import 'antd/dist/antd.css';
 import '../../styles.css';
 import axios from 'axios';
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 
 function Attachment(props) {
-	const { submission_id } = useParams()
+	const { submission_id } = useParams();
 	const [fileUpload, setFileUpload] = useState();
 	const [prevAttachments, setPrevAttachments] = useState(
 		JSON.parse(localStorage.getItem('userData_Attachments')) || []
@@ -20,15 +20,15 @@ function Attachment(props) {
 	const removeItem = (id) => {
 		axios
 			.delete(`http://127.0.0.1:8000/api/Attachment/${id}/`)
-			.then((res) => { 
-				console.log('RES Delete Attachment ', res)
-				const updated = prevAttachments.filter(ele => ele.id !== id)
-				setPrevAttachments(updated)
+			.then((res) => {
+				console.log('RES Delete Attachment ', res);
+				const updated = prevAttachments.filter((ele) => ele.id !== id);
+				setPrevAttachments(updated);
 			})
 			.catch((err) => console.log('ERROR Delete Attachment ', err));
 	};
 
-	// const prevAttachmentsList = 
+	// const prevAttachmentsList =
 	const config = {
 		headers: {
 			Authorization: `Token ${localStorage.getItem('userToken')}`,
@@ -80,30 +80,28 @@ function Attachment(props) {
 
 	return (
 		<div className='container'>
-			{/* {prevAttachmentsList} */}
 			<Form
 				name='attachment-form'
 				onFinish={onFinish}
 				autoComplete='off'
 				layout='horizontal'>
 				{prevAttachments.map((ele, index) => (
-		<div style={{ display: 'flex' }}>
-			<p>File title: {ele['FileName']}</p> <hr />
-			<p>File: {ele['File']}</p> <hr />
-			<Popconfirm
-				title='Are you sure to delete this attachment?'
-				onConfirm={() => removeItem(ele.id)}
-				// onCancel={cancel}
-				okText='Yes'
-				cancelText='No'>
-				<MinusCircleOutlined
-					// onClick={() => removeItem(ele.id)}
-					style={{ color: 'red' }}
-				/>
-			</Popconfirm>
-			<hr />
-		</div>
-	))}
+					<div style={{ display: 'flex' }}>
+						<p>File title: {ele['FileName']}</p> <hr />
+						<p>File: {ele['File']}</p> <hr />
+						<Popconfirm
+							title='Are you sure to delete this attachment?'
+							onConfirm={() => removeItem(ele.id)}
+							// onCancel={cancel}
+							okText='Yes'
+							cancelText='No'>
+							<MinusCircleOutlined
+								style={{ color: 'red' }}
+							/>
+						</Popconfirm>
+						<hr />
+					</div>
+				))}
 				<Form.Item
 					name='fileName'
 					label='File Title'

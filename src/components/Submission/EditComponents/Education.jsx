@@ -1,13 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, Space } from 'antd';
+import { Form, Input, Button, Space, Popconfirm } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../../styles.css';
 import { useParams } from 'react-router-dom'
 
 function Education(props) {
-	const { submission_id } = useParams()
+	const { submission_id } = useParams();
+	const [prevِEducation, setPrevِEducation] = useState(
+		JSON.parse(localStorage.getItem('userData_Education')) || []
+	);
+	// removing old items
+	const removeItem = (id) => {
+		axios
+			.delete(`http://127.0.0.1:8000/api/Education/${id}/`)
+			.then((res) => {
+				console.log('RES Delete Education ', res);
+				const updated = prevِEducation.filter((ele) => ele.id !== id);
+				setPrevِEducation(updated);
+			})
+			.catch((err) => console.log('ERROR Delete Education ', err));
+	};
 
 	const onFinish = (values) => {
 		console.log('Received values of form:', values);
@@ -31,11 +45,6 @@ function Education(props) {
 			})
 			.catch((err) => console.log('ERROR post education ', err));
 	};
-	// removing old items
-	const removeItem = (key) =>{
-		
-	}
-
 
 	return (
 		<div className='container'>
@@ -44,6 +53,24 @@ function Education(props) {
 				onFinish={onFinish}
 				autoComplete='off'
 				layout='vertical'>
+				{prevِEducation.map((ele, index) => (
+					<div style={{ display: 'flex' }}>
+						<p>Degree Title: {ele['DegreeTitle']}</p> <hr />
+						<p>. University Name: {ele['University']}</p> <hr />
+						<p>. GPA: {ele['gpa']}</p> <hr />
+						<Popconfirm
+							title='Are you sure to delete this education?'
+							onConfirm={() => removeItem(ele.id)}
+							// onCancel={cancel}
+							okText='Yes'
+							cancelText='No'>
+							<MinusCircleOutlined
+								style={{ color: 'red' }}
+							/>
+						</Popconfirm>
+						<hr />
+					</div>
+				))}
 				<Form.Item
 					name='DegreeTitle'
 					label='Degree Title'
