@@ -24,34 +24,37 @@ function ProfileEdit(props) {
 	const [city_option, setcity_option] = useState([]);
 	const [CountryCode, setCountryCode] = useState();
 	const [SelectedCode, setSelectedCode] = useState();
-	const [userDetails, seUserDetails] = useState({
-		FirstName:
-			JSON.parse(localStorage.getItem('userData_General')).FirstName ||
-			JSON.parse(localStorage.getItem('get_userData')).user.first_name,
-		LastName:
-			JSON.parse(localStorage.getItem('userData_General')).LastName ||
-			JSON.parse(localStorage.getItem('get_userData')).user.last_name,
-		Email:
-			JSON.parse(localStorage.getItem('userData_General')).Email ||
-			JSON.parse(localStorage.getItem('get_userData')).user.email,
-		// dateOfBirth: Date.parse(
-		// 	JSON.parse(localStorage.getItem('userData_General')).dateOfBirth
-		// ),
-		Country: JSON.parse(localStorage.getItem('userData_General')).Country,
-		City: JSON.parse(localStorage.getItem('userData_General')).City,
-		NumberOfDependents:
-			JSON.parse(localStorage.getItem('userData_General')).NumberOfDependents ||
-			0,
-		YearsOfExpereince: JSON.parse(localStorage.getItem('userData_General'))
-			.YearsOfExpereince,
-		MobileNumber: JSON.parse(localStorage.getItem('userData_General'))
-			.MobileNumber,
-		MartialStatus: JSON.parse(localStorage.getItem('userData_General'))
-			.MartialStatus,
-		CountryCode: SelectedCode,
-		Nationality: JSON.parse(localStorage.getItem('userData_General'))
-			.Nationality,
-	});
+	const [userDetails, seUserDetails] = useState(
+		JSON.parse(localStorage.getItem('userData_General'))
+	);
+	// const [userDetails, seUserDetails] = useState({
+	// 	FirstName:
+	// 		JSON.parse(localStorage.getItem('userData_General')).FirstName ||
+	// 		JSON.parse(localStorage.getItem('get_userData')).user.first_name,
+	// 	LastName:
+	// 		JSON.parse(localStorage.getItem('userData_General')).LastName ||
+	// 		JSON.parse(localStorage.getItem('get_userData')).user.last_name,
+	// 	Email:
+	// 		JSON.parse(localStorage.getItem('userData_General')).Email ||
+	// 		JSON.parse(localStorage.getItem('get_userData')).user.email,
+	// 	// dateOfBirth: Date.parse(
+	// 	// 	JSON.parse(localStorage.getItem('userData_General')).dateOfBirth
+	// 	// ),
+	// 	Country: JSON.parse(localStorage.getItem('userData_General')).Country,
+	// 	City: JSON.parse(localStorage.getItem('userData_General')).City,
+	// 	NumberOfDependents:
+	// 		JSON.parse(localStorage.getItem('userData_General')).NumberOfDependents ||
+	// 		0,
+	// 	YearsOfExpereince: JSON.parse(localStorage.getItem('userData_General'))
+	// 		.YearsOfExpereince,
+	// 	MobileNumber: JSON.parse(localStorage.getItem('userData_General'))
+	// 		.MobileNumber,
+	// 	MartialStatus: JSON.parse(localStorage.getItem('userData_General'))
+	// 		.MartialStatus,
+	// 	CountryCode: SelectedCode,
+	// 	Nationality: JSON.parse(localStorage.getItem('userData_General'))
+	// 		.Nationality,
+	// });
 
 	const handleCountry = (event) => {
 		let find_city = Country.find(function (element, index) {
@@ -315,6 +318,10 @@ function ProfileEdit(props) {
 						{
 							required: true,
 							message: 'Please enter your phone number!',
+						},
+						{
+							pattern: /^[0-9]+$/,
+							message: 'Please enter valid name',
 						},
 					]}>
 					<Input
