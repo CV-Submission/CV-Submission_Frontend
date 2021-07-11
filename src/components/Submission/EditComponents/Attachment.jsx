@@ -9,17 +9,19 @@ import 'antd/dist/antd.css';
 import '../../styles.css';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import apiUrl from './../../../APIConfig';
 
 function Attachment(props) {
 	const { submission_id } = useParams();
 	const [fileUpload, setFileUpload] = useState();
+	const [files, setFiles] = useState([]);
 	const [prevAttachments, setPrevAttachments] = useState(
 		JSON.parse(localStorage.getItem('userData_Attachments')) || []
 	);
 	// removing old items
 	const removeItem = (id) => {
 		axios
-			.delete(`http://127.0.0.1:8000/api/Attachment/${id}/`)
+			.delete(`${apiUrl}/api/Attachment/${id}/`)
 			.then((res) => {
 				console.log('RES Delete Attachment ', res);
 				const updated = prevAttachments.filter((ele) => ele.id !== id);
@@ -38,19 +40,45 @@ function Attachment(props) {
 	};
 
 	const onFinish = (values) => {
+		console.log('Attachment $$$$', values);
 		let formData = new FormData();
 		formData.append('File', fileUpload);
 		formData.append('FileName', values.fileName);
 		formData.append('submission_id', submission_id);
 
 		axios
-			.post(`http://localhost:8000/api/Attachment/`, formData, config)
+			.post(`${apiUrl}/api/Attachment/`, formData, config)
 			.then((res) => {
 				console.log('attachment res ', res);
 			})
 			.catch((err) => {
 				console.log('attachment error ', err);
 			});
+
+		let axiosList = [];
+		let req = {};
+		if (values['attachment-list'].length > 0) {
+			for (let i = 0; i < values['attachment-list'].length; i++) {
+				console.log("files from state, ", files)
+				let formData = new FormData();
+				formData.append('File', files[i+1]);
+				formData.append('FileName', values['attachment-list'][i].fileName);
+				formData.append('submission_id', submission_id);
+
+				req = axios.post(`${apiUrl}/api/Attachment/`, formData, config);
+				axiosList.push(req);
+			}
+			axios
+				.all(axiosList)
+				.then(
+					axios.spread((...res) => {
+						console.log('list post Attachment responses ', res);
+					})
+				)
+				.catch((errors) => {
+					console.log('List Attachment post errors ', errors);
+				});
+		}
 	};
 
 	const testUpload = ({ file, onSuccess }) => {
@@ -61,10 +89,21 @@ function Attachment(props) {
 	const onDrop = (e) => {
 		console.log('Dropped files', e);
 	};
-	const normFile = (e) => {
+	
+	const normFile = (e, key) => {
+		// console.log('Upload event KEY: ', key)
+		
 		console.log('Upload event: ', e);
-		if (e.fileList[0].originFileObj) setFileUpload(e.fileList[0].originFileObj);
-		else setFileUpload(e.fileList[0]);
+		if (e.fileList[0].originFileObj) {
+			setFileUpload(e.fileList[0].originFileObj);
+			
+			setFiles([...files, e.fileList[0].originFileObj]);
+			console.log("files added ", files)
+			
+		} else {
+			setFileUpload(e.fileList[0]);
+			setFiles([...files, e.fileList[0]]);
+		}
 	};
 	const onChange = (info) => {
 		const { status } = info.file;
@@ -79,7 +118,8 @@ function Attachment(props) {
 	};
 
 	return (
-		<div className='container'>
+		<div className='view'>
+			{/* {prevAttachmentsList} */}
 			<Form
 				name='attachment-form'
 				onFinish={onFinish}
@@ -95,9 +135,7 @@ function Attachment(props) {
 							// onCancel={cancel}
 							okText='Yes'
 							cancelText='No'>
-							<MinusCircleOutlined
-								style={{ color: 'red' }}
-							/>
+							<MinusCircleOutlined style={{ color: 'red' }} />
 						</Popconfirm>
 						<hr />
 					</div>
@@ -165,8 +203,9 @@ function Attachment(props) {
 									<Form.Item label='Attachment'>
 										<Form.Item
 											name='dragger'
+											fieldKey={[fieldKey, 'fileList']}
 											valuePropName='fileList'
-											getValueFromEvent={normFile}
+											getValueFromEvent={(e) => normFile(e, fieldKey)}
 											noStyle
 											maxCount={1}
 											accept='.pdf, .doc, .docx'>

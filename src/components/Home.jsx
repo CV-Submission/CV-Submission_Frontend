@@ -9,12 +9,12 @@ function Home(props) {
 					<Redirect to='/submissions' />
 				) : (
 					<div className='welcome'>
-						<div className='site-img' />
 						<h3>
 							Welcome to CV Submission. Please{' '}
 							<Link to='/sign-in'>Sign in</Link> or{' '}
 							<Link to='/sign-up'>Sign Up! </Link> if you're new here.
 						</h3>
+							<div className='site-img' />
 					</div>
 				)}
 			</div>

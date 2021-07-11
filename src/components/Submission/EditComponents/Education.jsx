@@ -5,6 +5,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../../styles.css';
 import { useParams } from 'react-router-dom'
+import apiUrl  from './../../../APIConfig'
 
 function Education(props) {
 	const { submission_id } = useParams();
@@ -24,22 +25,43 @@ function Education(props) {
 	};
 
 	const onFinish = (values) => {
-		console.log('Received values of form:', values);
+		console.log('Received values of form: #%$', values);
 
-		const data = {
-			DegreeTitle: values['DegreeTitle'],
-			GPA: values.gpa,
-			University: values['University'],
-			submission_id: submission_id,
-		};
 		const config = {
 			headers: {
 				Authorization: `Token ${localStorage.getItem('userToken')}`,
 				'content-type': 'application/json',
 			},
 		};
+		let axiosList = []
+		let req= {}
+		if (values["education-list"].length > 0){
+			for (let i = 0; i < values['education-list'].length; i++) {
+				const listData = {
+					DegreeTitle: values['education-list'][i].DegreeTitle,
+					GPA: values['education-list'][i].gpa,
+					University: values['education-list'][i].University,
+					submission_id: submission_id,
+				};
+				req = axios.post(`${apiUrl}/api/Education/`, listData, config);
+				axiosList.push(req);
+			}
+			axios.all(axiosList).then(axios.spread((...res) => {
+				console.log("list post education responses ", res)
+			})).catch(errors => {
+				console.log("List education post errors ", errors)
+			})
+			
+		}
+			const data = {
+				DegreeTitle: values['DegreeTitle'],
+				GPA: values.gpa,
+				University: values['University'],
+				submission_id: submission_id,
+			};
+		
 		axios
-			.post(`http://127.0.0.1:8000/api/Education/`, data, config)
+			.post(`${apiUrl}/api/Education/`, data, config)
 			.then((res) => {
 				console.log('RES post education ', res);
 			})
@@ -47,7 +69,7 @@ function Education(props) {
 	};
 
 	return (
-		<div className='container'>
+		<div className='view'>
 			<Form
 				name='education-form'
 				onFinish={onFinish}
@@ -90,10 +112,10 @@ function Education(props) {
 					fieldKey='University'
 					rules={[
 						{ required: true, message: 'Missing university name' },
-						{
-							pattern: /^[A-Za-z]+$/,
-							message: 'Please enter valid university title',
-						},
+						// {
+						// 	pattern: /^[A-Za-z]+$/,
+						// 	message: 'Please enter valid university title',
+						// },
 					]}>
 					<Input placeholder='University Name' />
 				</Form.Item>
@@ -140,10 +162,10 @@ function Education(props) {
 										fieldKey={[fieldKey, 'University']}
 										rules={[
 											{ required: true, message: 'Missing university name' },
-											{
-												pattern: /^[A-Za-z]+$/,
-												message: 'Please enter valid university title',
-											},
+											// {
+											// 	pattern: /^[A-Za-z]+$/,
+											// 	message: 'Please enter valid university title',
+											// },
 										]}>
 										<Input placeholder='University Name' />
 									</Form.Item>

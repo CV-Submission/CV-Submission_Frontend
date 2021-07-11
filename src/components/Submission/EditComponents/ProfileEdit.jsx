@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, DatePicker, InputNumber, Select, AutoComplete } from 'antd';
+import {
+	Form,
+	Input,
+	Button,
+	DatePicker,
+	InputNumber,
+	Select,
+	AutoComplete,
+} from 'antd';
 import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../../styles.css';
-import NATIONALITIES from '../../../nationalities'
+import NATIONALITIES from '../../../nationalities';
 import { useParams } from 'react-router-dom';
+import apiUrl from './../../../APIConfig';
+
 
 const { Option } = Select;
 let nationalityOptions = [...NATIONALITIES.map((ele) => ({ value: ele }))];
@@ -18,43 +28,47 @@ function ProfileEdit(props) {
 			'content-type': 'application/json',
 		},
 	};
-	const {submission_id} = useParams()
+	const { submission_id } = useParams();
 	const [hasDependents, setHasDependents] = useState(false);
 	const [Country, setCountry] = useState();
 	const [city_option, setcity_option] = useState([]);
 	const [CountryCode, setCountryCode] = useState();
 	const [SelectedCode, setSelectedCode] = useState();
-	const [userDetails, seUserDetails] = useState(
-		JSON.parse(localStorage.getItem('userData_General'))
-	);
-	// const [userDetails, seUserDetails] = useState({
-	// 	FirstName:
-	// 		JSON.parse(localStorage.getItem('userData_General')).FirstName ||
-	// 		JSON.parse(localStorage.getItem('get_userData')).user.first_name,
-	// 	LastName:
-	// 		JSON.parse(localStorage.getItem('userData_General')).LastName ||
-	// 		JSON.parse(localStorage.getItem('get_userData')).user.last_name,
-	// 	Email:
-	// 		JSON.parse(localStorage.getItem('userData_General')).Email ||
-	// 		JSON.parse(localStorage.getItem('get_userData')).user.email,
-	// 	// dateOfBirth: Date.parse(
-	// 	// 	JSON.parse(localStorage.getItem('userData_General')).dateOfBirth
-	// 	// ),
-	// 	Country: JSON.parse(localStorage.getItem('userData_General')).Country,
-	// 	City: JSON.parse(localStorage.getItem('userData_General')).City,
-	// 	NumberOfDependents:
-	// 		JSON.parse(localStorage.getItem('userData_General')).NumberOfDependents ||
-	// 		0,
-	// 	YearsOfExpereince: JSON.parse(localStorage.getItem('userData_General'))
-	// 		.YearsOfExpereince,
-	// 	MobileNumber: JSON.parse(localStorage.getItem('userData_General'))
-	// 		.MobileNumber,
-	// 	MartialStatus: JSON.parse(localStorage.getItem('userData_General'))
-	// 		.MartialStatus,
-	// 	CountryCode: SelectedCode,
-	// 	Nationality: JSON.parse(localStorage.getItem('userData_General'))
-	// 		.Nationality,
-	// });
+	// const [userDetails, seUserDetails] = useState( 
+	// 	JSON.parse(localStorage.getItem('userData_General'))
+	// );
+	const [userDetails, seUserDetails] = useState({
+		FirstName:
+			localStorage.getItem('userData_General') === null
+				? JSON.parse(localStorage.getItem('get_userData')).user.first_name
+				: JSON.parse(localStorage.getItem('userData_General')).FirstName,
+
+		LastName:
+			localStorage.getItem('userData_General') === null
+				? JSON.parse(localStorage.getItem('get_userData')).user.last_name
+				: JSON.parse(localStorage.getItem('userData_General')).LastName,
+		Email:
+			localStorage.getItem('userData_General') === null
+				? JSON.parse(localStorage.getItem('get_userData')).user.email
+				: JSON.parse(localStorage.getItem('userData_General')).Email,
+		// dateOfBirth: Date.parse(
+		// 	JSON.parse(localStorage.getItem('userData_General')).dateOfBirth
+		// ),
+		Country: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General')).Country : "",
+		City: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General')).City : "",
+		NumberOfDependents:
+			localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General')).NumberOfDependents :
+			0,
+		YearsOfExpereince: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General'))
+			.YearsOfExpereince : 0,
+		MobileNumber: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General'))
+			.MobileNumber : "",
+		MartialStatus: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General'))
+			.MartialStatus : "",
+		CountryCode: SelectedCode,
+		Nationality: localStorage.getItem('userData_General') !== null? JSON.parse(localStorage.getItem('userData_General'))
+			.Nationality : "",
+	});
 
 	const handleCountry = (event) => {
 		let find_city = Country.find(function (element, index) {
@@ -94,9 +108,8 @@ function ProfileEdit(props) {
 				console.log('API ERROR:', error);
 			});
 	}, []);
-	
 
-	// User Details Submit 
+	// User Details Submit
 	const onFinish = (values) => {
 		// console.log('Success: @@@@@@@@@@@@@@@@@', values);
 
@@ -117,11 +130,11 @@ function ProfileEdit(props) {
 		};
 
 		axios
-			.post(`http://127.0.0.1:8000/api/UserDetial/`, data, config)
+			.post(`${apiUrl}/api/UserDetial/`, data, config)
 			.then((res) => {
 				console.log('RES Profile updated ', res);
 				localStorage.setItem('userData_General', JSON.stringify(res.data));
-				seUserDetails(res.data)
+				seUserDetails(res.data);
 			})
 			.catch((err) => console.log('ERROR Profile edit ', err));
 	};
@@ -134,7 +147,7 @@ function ProfileEdit(props) {
 	};
 
 	return (
-		<div>
+		<div className='view'>
 			<Form
 				name='profile-edit'
 				layout='vertical'

@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useHistory } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './styles.css';
+import apiUrl from './../APIConfig'
 
 function SignUp(props) {
 	
@@ -26,12 +27,12 @@ function SignUp(props) {
 			},
 		};
 		axios
-			.post(`http://127.0.0.1:8000/api-token-auth/register`, data, config)
+			.post(`${apiUrl}/api-token-auth/register`, data, config)
 			.then((res) => {
 				console.log('------- signed up -----', res);
 
 				localStorage.setItem('userDetails', data);
-				localStorage.setItem('userToken', res.data.token)
+				localStorage.setItem('userToken', res.data.token);
 			})
 			.catch((err) => console.log('sign up error ------', err));
 		

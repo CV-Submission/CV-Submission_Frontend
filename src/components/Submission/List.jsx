@@ -3,6 +3,7 @@ import { Card, Button} from 'antd';
 import axios from 'axios'
 import '../styles.css'
 import { Link , useHistory} from 'react-router-dom'
+import apiUrl from './../../APIConfig'
 
 function List(props) {
 	let history = useHistory();
@@ -16,7 +17,7 @@ function List(props) {
 
     const createSubmission = () => {
 			axios
-				.post(`http://127.0.0.1:8000/api/Submission/`, {}, config)
+				.post(`${apiUrl}/api/Submission/`, {}, config)
 				.then((res) => {
 					console.log('res create new submission ', res);
 					localStorage.setItem('submissionID', res.data.id);
@@ -36,6 +37,15 @@ function List(props) {
 
     return (
 			<div className='container'>
+				<div className='container'>
+					<Button
+						type='primary'
+						htmlType='button'
+						className='sign-form-button'
+						onClick={createSubmission}>
+						New Submission +
+					</Button>
+				</div>
 				{submissionList.length > 0 ? (
 					submissionList.map((ele) => (
 						<Card
@@ -50,15 +60,6 @@ function List(props) {
 						<p> no submissions created yet </p>
 					</div>
 				)}
-				<div className='container'>
-					<Button
-						type='primary'
-						htmlType='button'
-						className='sign-form-button'
-						onClick={createSubmission}>
-						New Submission +
-					</Button>
-				</div>
 			</div>
 		);
 }

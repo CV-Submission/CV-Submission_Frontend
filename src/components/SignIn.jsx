@@ -5,6 +5,7 @@ import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import './styles.css';
+import apiUrl from './../APIConfig';
 
 function SignIn(props) {
 	// const [redirectToReferrer, setRedirectToReferrer] = useState(false);
@@ -22,7 +23,7 @@ function SignIn(props) {
 			headers: { 'content-type': 'application/json' },
 		};
 		axios
-			.post(`http://127.0.0.1:8000/api-token-auth/auth`, data, config)
+			.post(`${apiUrl}/api-token-auth/auth`, data, config)
 			.then((res) => {
 				console.log('RES sign in ', res);
 				localStorage.setItem('userToken', res.data.token);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Collapse, Row, Col } from 'antd';
 import axios from 'axios'
 import { useHistory, useParams , Link} from 'react-router-dom';
+import apiUrl from './../../APIConfig';
 
 const { Panel } = Collapse;
 
@@ -23,22 +24,28 @@ let history = useHistory();
 		
 		// GET user model data
 		axios
-			.get(`http://127.0.0.1:8000/api-token-auth/user`, config)
+			.get(`${apiUrl}/api-token-auth/user`, config)
 			.then((res) => {
 				console.log('res in view ', res);
 				localStorage.setItem('get_userData', JSON.stringify(res.data))
-				setUserData(res.data)
+				setUserData(res.data.user)
 			})
 			.catch((err) => console.log('ERROR in view ', err));
 
 			// GET user general details 
 			axios
-				.get(`http://127.0.0.1:8000/api/UserDetial/`, config)
+				.get(`${apiUrl}/api/UserDetial/`, config)
 				.then((res) => {
 					console.log('res in view USER DETIALS ', res);
-					// set local storage res.data[0] 
-					localStorage.setItem('userData_General', JSON.stringify(res.data[0]));
-					setUserDetails(res.data[0])
+					// set local storage res.data[0]
+					// res.data[0] !== undefined &&
+					if (res.data.length > 0) {
+						localStorage.setItem(
+							'userData_General',
+							JSON.stringify(res.data[0])
+						);
+						setUserDetails(res.data[0]);
+					}
 				})
 				.catch((err) =>
 					console.log('ERROR in view USER DETIALS ', err)
@@ -46,7 +53,7 @@ let history = useHistory();
 
 				// GET attachment 
 				axios
-					.get(`http://localhost:8000/api/Attachment/`, config)
+					.get(`${apiUrl}/api/Attachment/`, config)
 					.then((res) => { 
 						console.log('res get attchments ', res)
 						// set local storage 
@@ -60,7 +67,7 @@ let history = useHistory();
 
 					// GET Education
 					axios
-						.get(`http://127.0.0.1:8000/api/Education/`, config)
+						.get(`${apiUrl}/api/Education/`, config)
 						.then((res) => {
 							console.log('RES GET education ', res);
 							localStorage.setItem(
@@ -70,14 +77,12 @@ let history = useHistory();
 							setEducation(res.data)
 						})
 						.catch((err) => console.log('ERROR GET education ', err));
-
-
 	}, [])
-
-	
 	return (
-		<div className=''>
-			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+		<div className='view'>
+			<Row
+				gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
+				style={{ margin: '5% 7% 7% 8%' }}>
 				<Collapse defaultActiveKey={['1']} ghost>
 					<Panel header='General details' key='1'>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -85,7 +90,8 @@ let history = useHistory();
 								<p>First Name: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['FirstName'] || userData['first_name']}</p>
+								<p>{userData['first_name']}</p>
+								{/* userDetails['FirstName'] || */}
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -93,7 +99,8 @@ let history = useHistory();
 								<p>Last Name: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['LastName'] || userData['last_name']}</p>
+								<p>{userData['last_name']}</p>
+								{/* userDetails['LastName'] || */}
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -101,7 +108,8 @@ let history = useHistory();
 								<p>Email Address: </p>
 							</Col>
 							<Col className='gutter-row' span={12}>
-								<p>{userDetails['Email'] || userData['email']}</p>
+								<p>{ userData['email']}</p>
+								{/* userDetails['Email'] || */}
 							</Col>
 						</Row>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -110,7 +118,7 @@ let history = useHistory();
 							</Col>
 							<Col className='gutter-row' span={12}>
 								<p>
-									{userDetails['CountryCode'] || '-'}
+									{userDetails['CountryCode'] !== undefined ? userDetails['CountryCode'] : "-" }
 									{userDetails['MobileNumber'] || '-'}
 								</p>
 							</Col>
@@ -230,8 +238,9 @@ let history = useHistory();
 					</Panel>
 				</Collapse>
 			</Row>
-
-			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+			<Row
+				style={{ margin: '5% 7% 7% 8%' }}
+				gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
 				<Link to={`/edit/${submission_id}`}>
 					<Button type='primary' htmlType='button' className='sign-form-button'>
 						Edit
