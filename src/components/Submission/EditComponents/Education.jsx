@@ -38,7 +38,7 @@ function Education(props) {
 
 
 	return (
-		<div className='container'>
+		<div className='view'>
 			<Form
 				name='education-form'
 				onFinish={onFinish}

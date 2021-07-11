@@ -1,46 +1,85 @@
 /* --- Sign in Sign Up Forms Style --- */
 .sign-form {
-	max-width: '600px';
-	height: 80vh;
-	margin: 6%;
-	padding: 4%;
+  max-width: "600px";
+  height: 80vh;
+  margin: 6%;
+  padding: 4%;
 }
 .sign-form-button {
-	width: 100%;
+  width: 100%;
 }
 .container {
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.view {
+	text-align: left;
+	display: flex;
+	justify-content: left;
+	align-items: left;
+  }
 
 /* --- Style --- */
 
 /* --- Home - welcome --- */
 
 .welcome {
-	height: 70vh;
-	width: 100%;
-	padding: 2%;
-	font-family: 'Roboto Slab', serif;
+  height: 70vh;
+  width: 100%;
+  padding: 2%;
+  font-family: "Roboto Slab", serif;
 }
 .welcome h3 {
-	margin-top: 3%;
-	text-align: center;
+  margin-top: 3%;
+  text-align: center;
 }
 .site-img {
-	background-image: url(.././images/welcome-cv.png);
-	background-repeat: repeat;
-	background-position: center;
-	background-size: cover;
-	height: 100%;
-	width: 100%;
-	text-align: center;
-	margin:0;
+  background-image: url(.././images/welcome-cv.png);
+  border: 1ch;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: cover;
+  height: 80%;
+  width: 50%;
+  text-align: center;
+  margin: auto;
 }
 
 /* --- Style --- */
-.edit-page{
+.edit-page {
+
+	/* text-align: left;
+	display: flex;
+	justify-content: center;
+	align-items: left; */
 	
+}
+
+.curved-div {
+  background: #2d5362;
+  color: #fff;
+  text-align: center;
+}
+.curved-div h1 {
+  font-size: 4rem;
+  color: #fff;
+}
+.curved-div p {
+  font-size: 1.4rem;
+  color: #fff;
+}
+.curved-div svg {
+  display: block;
+}
+.curved-divWhyus svg {
+  display: block;
+}
+.teamContent {
+  width: 150%;
+}
+.firstBlock {
+  font-size: 1.5em;
 }

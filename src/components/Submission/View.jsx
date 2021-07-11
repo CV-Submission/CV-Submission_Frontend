@@ -70,14 +70,12 @@ let history = useHistory();
 							setEducation(res.data)
 						})
 						.catch((err) => console.log('ERROR GET education ', err));
-
-
 	}, [])
-
-	
 	return (
-		<div className=''>
-			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+		<div className='view'>
+			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
+			style={{ margin: "5% 7% 7% 8%"}}
+			>
 				<Collapse defaultActiveKey={['1']} ghost>
 					<Panel header='General details' key='1'>
 						<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -230,8 +228,9 @@ let history = useHistory();
 					</Panel>
 				</Collapse>
 			</Row>
-
-			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+			<Row 
+			style={{ margin: "5% 7% 7% 8%"}}
+			gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
 				<Link to={`/edit/${submission_id}`}>
 					<Button type='primary' htmlType='button' className='sign-form-button'>
 						Edit

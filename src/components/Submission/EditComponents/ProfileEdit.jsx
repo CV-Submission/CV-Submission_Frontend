@@ -131,7 +131,7 @@ function ProfileEdit(props) {
 	};
 
 	return (
-		<div>
+		<div className="view">
 			<Form
 				name='profile-edit'
 				layout='vertical'

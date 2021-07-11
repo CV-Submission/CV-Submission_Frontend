@@ -79,7 +79,7 @@ function Attachment(props) {
 	};
 
 	return (
-		<div className='container'>
+		<div className='view'>
 			{/* {prevAttachmentsList} */}
 			<Form
 				name='attachment-form'

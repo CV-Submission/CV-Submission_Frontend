@@ -36,6 +36,15 @@ function List(props) {
 
     return (
 			<div className='container'>
+				<div className='container'>
+					<Button
+						type='primary'
+						htmlType='button'
+						className='sign-form-button'
+						onClick={createSubmission}>
+						New Submission +
+					</Button>
+				</div>
 				{submissionList.length > 0 ? (
 					submissionList.map((ele) => (
 						<Card
@@ -50,15 +59,6 @@ function List(props) {
 						<p> no submissions created yet </p>
 					</div>
 				)}
-				<div className='container'>
-					<Button
-						type='primary'
-						htmlType='button'
-						className='sign-form-button'
-						onClick={createSubmission}>
-						New Submission +
-					</Button>
-				</div>
 			</div>
 		);
 }
